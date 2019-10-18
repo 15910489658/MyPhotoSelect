@@ -43,6 +43,7 @@ Toast使用方法：
 	     * @param text 需要toast的文字
 	     * @param isCenter 文字是否中间显示（手机屏幕正中间）
 	     */
+	     
 	ToastUtils.getInstance().showShort(this,"hello Toast!",false);
 	
 原文地址：https://github.com/JarekWang/photoselect
