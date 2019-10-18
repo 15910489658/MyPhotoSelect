@@ -35,6 +35,10 @@ Step 2. Add the dependency
 
  	List<ImageFolderBean> list = (List<ImageFolderBean>) data.getSerializableExtra("list");
 	
+有反应内存溢出的,在onDestory里需要把注入的观察者对象移除就Ok了
+	
+	ImageSelectObservable.getInstance().deleteObserver(this);
+	
 Toast使用方法：
 		
 		/**
