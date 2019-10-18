@@ -57,7 +57,7 @@ public class ToastUtils {
      * @param context 上下文
      * @param text 需要toast的文字
      */
-    public static void showLong(Context context,String text,boolean isCenter){
+    public void showLong(Context context,String text,boolean isCenter){
         if(mToast == null){
             mToast = Toast.makeText(context,text,Toast.LENGTH_LONG);
         }else{
@@ -74,7 +74,7 @@ public class ToastUtils {
      * @param context 上下文
      * @param resIId 资源文件
      */
-    public static void showResShort(Context context,int resIId,boolean isCenter){
+    public void showResShort(Context context,int resIId,boolean isCenter){
         if(mToast == null){
             mToast = Toast.makeText(context,resIId,Toast.LENGTH_SHORT);
         }else{
@@ -91,7 +91,7 @@ public class ToastUtils {
      * @param context 上下文
      * @param resId 资源文件
      */
-    public static void showResLong(Context context,int resId,boolean isCenter){
+    public void showResLong(Context context,int resId,boolean isCenter){
         if(mToast == null){
             mToast = Toast.makeText(context,resId,Toast.LENGTH_LONG);
         }else{
@@ -109,7 +109,7 @@ public class ToastUtils {
      * @param text
      * @param resImg
      */
-    public static void showImgShort(Context context,String text,int resImg,boolean isCenter){
+    public void showImgShort(Context context,String text,int resImg,boolean isCenter){
         if(mToast == null){
             mToast = Toast.makeText(context,text,Toast.LENGTH_SHORT);
         }else{
@@ -129,7 +129,7 @@ public class ToastUtils {
      * @param text
      * @param resImg
      */
-    public static void showImgLong(Context context,String text,int resImg,boolean isCenter){
+    public void showImgLong(Context context,String text,int resImg,boolean isCenter){
         if(mToast == null){
             mToast = Toast.makeText(context,text,Toast.LENGTH_LONG);
         }else{
