@@ -22,15 +22,17 @@ Step 2. Add the dependency
 单选时，在需要的地方调用：
 
    /*单选，参数对应的是context, 回调*/
+   
         FolderListActivity.startSelectSingleImgActivity(this, 2);
 
 多选时：
 
 /*参数对应context, 回调code, 传入的图片List, 可选的最大张数*/
+
         FolderListActivity.startFolderListActivity(this, 1, null, 9);
 
 最后Activity的onActivityResult中接收返回的图片数据：
 
- List<ImageFolderBean> list = (List<ImageFolderBean>) data.getSerializableExtra("list");
-
+ 	List<ImageFolderBean> list = (List<ImageFolderBean>) data.getSerializableExtra("list");
+	
 原文地址：https://github.com/JarekWang/photoselect
