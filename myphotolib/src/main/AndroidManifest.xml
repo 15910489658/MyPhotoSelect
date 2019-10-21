@@ -11,6 +11,7 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
+        <activity android:name=".activity.BaseActivity"></activity>
         <activity android:name=".activity.ClipImageActivity" />
         <activity android:name=".activity.FolderListActivity" />
         <activity android:name=".activity.ImageSelectActivity" />
