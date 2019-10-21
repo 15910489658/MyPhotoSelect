@@ -47,4 +47,11 @@ public class ImageFolderBean implements Serializable {
     /**当前图片在列表中顺序*/
     public int position;
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 }

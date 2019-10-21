@@ -7,10 +7,11 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.DefaultCompany.ProductName.activity.FolderListActivity;
@@ -18,21 +19,26 @@ import com.DefaultCompany.ProductName.bean.ImageFolderBean;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private final int STORAGE_PERMISSION = 101;
+    private ImageView iv_headimg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        iv_headimg = findViewById(R.id.iv_headimg);
     }
 
     //单选
     public void onSingleClick(View view) {
         getStoragePermission(1);
+//        ToastUtils.getInstance().showShort(this,"hello Toast!",false);
     }
 
     //多选
@@ -61,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         switch (code) {
             case 1:
                 /*单选，参数对应的是context, 回调*/
-                FolderListActivity.startSelectSingleImgActivity(this, 2);
+                FolderListActivity.startSelectSingleImgActivity(this, 2,true);
                 break;
 
             case 2:
@@ -81,16 +87,18 @@ public class MainActivity extends AppCompatActivity {
             switch (requestCode) {
                 case 1:
                 case 2:
-                    List<ImageFolderBean> list = (List<ImageFolderBean>) data.getSerializableExtra("list");
+                    final List<ImageFolderBean> list = (List<ImageFolderBean>) data.getSerializableExtra("list");
                     if (list == null) {
                         return;
                     }
-                    StringBuilder stringBuffer = new StringBuilder();
+                    final StringBuilder stringBuffer = new StringBuilder();
                     for (ImageFolderBean string : list) {
                         stringBuffer.append(string.path).append("\n");
                     }
                     Toast.makeText(MainActivity.this,stringBuffer.toString(),Toast.LENGTH_SHORT).show();
 
+                    //图片展示
+                    iv_headimg.setImageURI(Uri.fromFile(new File(stringBuffer.toString().trim())));
                     break;
             }
         }

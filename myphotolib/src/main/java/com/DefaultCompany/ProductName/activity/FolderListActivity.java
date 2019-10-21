@@ -1,16 +1,28 @@
 package com.DefaultCompany.ProductName.activity;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.View;
 
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.DefaultCompany.ProductName.BuildConfig;
 import com.DefaultCompany.ProductName.R;
 import com.DefaultCompany.ProductName.adapter.ImageFolderAdapter;
 import com.DefaultCompany.ProductName.bean.ImageFolderBean;
@@ -18,24 +30,37 @@ import com.DefaultCompany.ProductName.core.ImageSelectObservable;
 import com.DefaultCompany.ProductName.listener.OnRecyclerViewClickListener;
 import com.DefaultCompany.ProductName.utils.ImageUtils;
 import com.DefaultCompany.ProductName.utils.TitleView;
+import com.DefaultCompany.ProductName.utils.ToastUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 本地图片浏览 list列表
  */
 public class FolderListActivity extends Activity implements Callback, OnRecyclerViewClickListener, View.OnClickListener {
 
+    private static boolean isRound = false;
+    private final int MREQUEST_CODE = 1000;
+    // 图片临时保存路径
+    private static String mTemporaryPath;
+
     public static void startFolderListActivity(Activity context, int REQUEST_CODE, ArrayList<ImageFolderBean> photos, int sMaxPicNum) {
+        isRound = false;
         Intent addPhoto = new Intent(context, FolderListActivity.class);
         addPhoto.putExtra("list", photos);
         addPhoto.putExtra("max_num", sMaxPicNum);
         context.startActivityForResult(addPhoto, REQUEST_CODE);
     }
 
-    public static void startSelectSingleImgActivity(Activity context, int REQUEST_CODE) {
+    public static void startSelectSingleImgActivity(Activity context, int REQUEST_CODE,boolean isTailor) {
+        isRound = isTailor;
+        if(isTailor){
+            mTemporaryPath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath()
+                    + File.separator + System.currentTimeMillis() + "photo.jpg";
+        }
         Intent addPhoto = new Intent(context, FolderListActivity.class);
         addPhoto.putExtra("single", true);
         context.startActivityForResult(addPhoto, REQUEST_CODE);
@@ -107,15 +132,97 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_ADD_OK_CODE) {
-                Intent intent = getIntent();
-                ArrayList<ImageFolderBean> list = new ArrayList<>();
-                list.addAll(ImageSelectObservable.getInstance().getSelectImages());
-                intent.putExtra("list", list);
-                setResult(RESULT_OK, intent);
-                this.finish();
+            switch (requestCode){
+                case REQUEST_ADD_OK_CODE:
+                        if(isRound){
+                            List<ImageFolderBean> selectImages = ImageSelectObservable.getInstance().getSelectImages();
+                            if (selectImages != null && selectImages.size() > 0) {
+//                                cropPhoto(getMediaUriFromPath(this,selectImages.get(selectImages.size()-1).path));
+                                gotoClipActivity(getMediaUriFromPath(this,selectImages.get(selectImages.size()-1).path));
+                            } else {
+                                ToastUtils.getInstance().showShort(this,getString(R.string.select_photo_error),false);
+                            }
+                        }else{
+                            Intent intent = getIntent();
+                            ArrayList<ImageFolderBean> list = new ArrayList<>();
+                            list.addAll(ImageSelectObservable.getInstance().getSelectImages());
+                            intent.putExtra("list", list);
+                            setResult(RESULT_OK, intent);
+                            this.finish();
+                        }
+                    break;
+
+                case MREQUEST_CODE:
+                    if(data != null){
+                        Uri uri = data.getData();
+                        String cropImagePath = getRealFilePathFromUri(this,uri);
+                        File cropFile = new File(cropImagePath);
+                        if (cropFile.exists()) {
+                            Intent intent = getIntent();
+                            ArrayList<ImageFolderBean> list = new ArrayList<>();
+                            ImageSelectObservable.getInstance().getSelectImages().get(0).setPath(cropImagePath);
+                            list.addAll(ImageSelectObservable.getInstance().getSelectImages());
+                            intent.putExtra("list", list);
+                            setResult(RESULT_OK, intent);
+                            this.finish();
+                        }
+                    }
+                    break;
+                    default:
+                        break;
+            }
+        }else{
+            //单选模式设定list只存一张图片
+            if (isRound){
+                ImageSelectObservable.getInstance().clearSelectImgs();
             }
         }
+    }
+
+    /**
+     * 根据Uri返回文件绝对路径
+     * 兼容了file:///开头的 和 content://开头的情况
+     */
+    public static String getRealFilePathFromUri(final Context context, final Uri uri) {
+        if (null == uri) return null;
+        final String scheme = uri.getScheme();
+        String data = null;
+        if (scheme == null)
+            data = uri.getPath();
+        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+            data = uri.getPath();
+        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                    if (index > -1) {
+                        data = cursor.getString(index);
+                    }
+                }
+                cursor.close();
+            }
+        }
+        return data;
+    }
+
+    /**
+     * 裁剪图片
+     */
+    private void cropPhoto(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("scale", true);
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("outputX", 480);
+        intent.putExtra("outputY", 480);
+        intent.putExtra("noFaceDetection", true);
+        intent.putExtra("return-data", false);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(mTemporaryPath)));
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        startActivityForResult(intent, MREQUEST_CODE);
     }
 
     @SuppressWarnings("unchecked")
@@ -157,4 +264,35 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
         ImageSelectObservable.getInstance().clearSelectImgs();
         ImageSelectObservable.getInstance().clearFolderImages();
     }
+
+    public static Uri getMediaUriFromPath(Context context, String path) {
+        Uri mediaUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Cursor cursor = context.getContentResolver().query(mediaUri,
+                null,
+                MediaStore.Images.Media.DISPLAY_NAME + "= ?",
+                new String[] {path.substring(path.lastIndexOf("/") + 1)},
+                null);
+
+        Uri uri = null;
+        if(cursor.moveToFirst()) {
+            uri = ContentUris.withAppendedId(mediaUri,
+                    cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
+        }
+        cursor.close();
+        return uri;
+    }
+
+    /**
+     250      * 打开截图的界面
+     251      * @param uri
+     252      */
+     private void gotoClipActivity(Uri uri){
+                 if(uri == null){
+                         return;
+                     }
+                 Intent intent = new Intent(this,ClipImageActivity.class);
+                 intent.putExtra("type",1);
+                 intent.setData(uri);
+                 startActivityForResult(intent,MREQUEST_CODE);
+             }
 }

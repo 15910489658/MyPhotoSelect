@@ -8,4 +8,7 @@
     <color name="title_bg">#FFFF5F62</color>
     <color name="red_light">#ff5f62</color>
     <color name="gray_light">#3333</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
 </resources>
