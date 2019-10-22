@@ -16,7 +16,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.JulyJiangL:MyPhotoSelect:1.0.4'
+	        implementation 'com.github.JulyJiangL:MyPhotoSelect:1.0.5'
 	}
 
 单选时，在需要的地方调用：
