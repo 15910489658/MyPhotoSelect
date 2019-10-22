@@ -1,57 +1,42 @@
-package com.photo.select;
+package com.photo.selectlib.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.photo.selectlib.activity.FolderListActivity;
 import com.photo.selectlib.bean.ImageFolderBean;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import java.io.File;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class BaseActivity extends Activity {
 
     private final int STORAGE_PERMISSION = 101;
-    private ImageView iv_headimg;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        iv_headimg = findViewById(R.id.iv_headimg);
     }
 
-    //单选
-    public void onSingleClick(View view) {
-        getStoragePermission(1);
-//        ToastUtils.getInstance().showShort(this,"hello Toast!",false);
-    }
-
-    //多选
-    public void onDoubleClick(View view) {
+    public void openPhotoSingleSelect(){
         getStoragePermission(2);
     }
 
     private void getStoragePermission(int code) {
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 //没有权限则申请权限
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION);
             } else {
                 //有权限直接执行,docode()不用做处理
                 doCode(code);
@@ -67,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         switch (code) {
             case 1:
                 /*单选，参数对应的是context, 回调*/
-                FolderListActivity.startSelectSingleImgActivity(this, 2,true);
+                FolderListActivity.startSelectSingleImgActivity(this, 2,false);
                 break;
 
             case 2:
@@ -87,18 +72,15 @@ public class MainActivity extends AppCompatActivity {
             switch (requestCode) {
                 case 1:
                 case 2:
-                    final List<ImageFolderBean> list = (List<ImageFolderBean>) data.getSerializableExtra("list");
+                    List<ImageFolderBean> list = (List<ImageFolderBean>) data.getSerializableExtra("list");
                     if (list == null) {
                         return;
                     }
-                    final StringBuilder stringBuffer = new StringBuilder();
+                    StringBuilder stringBuffer = new StringBuilder();
                     for (ImageFolderBean string : list) {
                         stringBuffer.append(string.path).append("\n");
                     }
-                    Toast.makeText(MainActivity.this,stringBuffer.toString(),Toast.LENGTH_SHORT).show();
-
-                    //图片展示
-                    iv_headimg.setImageURI(Uri.fromFile(new File(stringBuffer.toString().trim())));
+                    Toast.makeText(this,stringBuffer.toString(),Toast.LENGTH_SHORT).show();
                     break;
             }
         }

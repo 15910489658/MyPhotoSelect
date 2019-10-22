@@ -12,7 +12,7 @@
         android:layout_height="match_parent" >
     </androidx.viewpager.widget.ViewPager>
 
-    <com.DefaultCompany.ProductName.utils.TitleView
+    <com.photo.selectlib.utils.TitleView
         android:id="@+id/tv_large_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_height"
