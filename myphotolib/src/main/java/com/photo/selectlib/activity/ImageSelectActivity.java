@@ -164,6 +164,7 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
             if (requestCode == REQUEST_PREVIEW_PHOTO) {
                 mAdapter.notifyDataSetChanged();
                 mOkTv.setText(getResources().getString(R.string.photo_ok, mAdapter.getSelectlist().size()));
+                mOkTv.setBackgroundResource(mAdapter.getSelectlist().size() > 0?R.drawable.shape_light_red_bg:R.drawable.shape_light_nomal_bg);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -194,6 +195,7 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
             PreviewImageActivity.startPreviewPhotoActivityForResult(this, position, REQUEST_PREVIEW_PHOTO);
         }
         mOkTv.setText(getResources().getString(R.string.photo_ok, mAdapter.getSelectlist().size()));
+        mOkTv.setBackgroundResource(mAdapter.getSelectlist().size() > 0?R.drawable.shape_light_red_bg:R.drawable.shape_light_nomal_bg);
 
     }
 
@@ -206,5 +208,6 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
     public void update(Observable o, Object arg) {
         mAdapter.notifyDataSetChanged();
         mOkTv.setText(getResources().getString(R.string.photo_ok, mAdapter.getSelectlist().size()));
+        mOkTv.setBackgroundResource(mAdapter.getSelectlist().size() > 0?R.drawable.shape_light_red_bg:R.drawable.shape_light_nomal_bg);
     }
 }

@@ -59,7 +59,7 @@
             android:clickable="true"
             android:layout_margin="3dp"
             android:padding="5dp"
-            android:background="@drawable/shape_light_red_bg"
+            android:background="@drawable/shape_light_nomal_bg"
             android:text="@string/photo_ok" />
     </RelativeLayout>
 

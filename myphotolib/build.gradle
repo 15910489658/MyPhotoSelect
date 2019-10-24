@@ -32,4 +32,5 @@ dependencies {
     implementation files('libs/universal-image-loader-1.9.5.jar')
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
+    api files('libs/unity-classes.jar')
 }

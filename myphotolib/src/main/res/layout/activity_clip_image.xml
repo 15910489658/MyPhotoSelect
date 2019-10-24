@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#173070">
+        android:background="@color/title_bg">
 
         <ImageView
             android:id="@+id/iv_back"
@@ -32,7 +32,7 @@
             android:textSize="20sp" />
         <TextView
             android:textStyle="bold"
-            android:background="#fff"
+            android:background="@drawable/shape_light_red_bg"
             android:id="@+id/tv_ok"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
@@ -41,7 +41,7 @@
             android:gravity="center"
             android:textSize="14sp"
             android:padding="5dp"
-            android:textColor="#000"
+            android:textColor="@color/white"
             android:text="确定"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
