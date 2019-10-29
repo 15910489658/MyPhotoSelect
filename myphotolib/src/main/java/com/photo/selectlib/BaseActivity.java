@@ -52,7 +52,7 @@ public class BaseActivity extends Activity {
     /**
      * 单选
      */
-    public void openPhotoSingleSelect(){
+    public void OpenPhotoSingleSelectCut(){
         StorageUtil.getInstance().getStoragePermission(mActivity,1);
     }
 

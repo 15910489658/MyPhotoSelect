@@ -41,7 +41,7 @@ public class UnitySendMessageUtil {
          * 参数二：为Android调用Unity方法（.cs 脚本方法名称）
          * 参数三：为Android要传递给Unity的数据
          */
-        UnityPlayer.UnitySendMessage(s, "responsePhotoSelect", content);
+        UnityPlayer.UnitySendMessage(s, "ResponsePhotoSelectCutPath", content);
     }
 
 }
