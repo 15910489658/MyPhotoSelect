@@ -17,6 +17,7 @@ Step 2. Add the dependency
 
 	dependencies {
 	        implementation 'com.github.JulyJiangL:MyPhotoSelect:1.0.8'
+		implementation 'androidx.appcompat:appcompat:1.1.0'
 	}
 
 单选时，在需要的地方调用：
