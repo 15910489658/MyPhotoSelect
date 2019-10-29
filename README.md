@@ -19,6 +19,17 @@ Step 2. Add the dependency
 	        implementation 'com.github.JulyJiangL:MyPhotoSelect:1.0.8'
 		implementation 'androidx.appcompat:appcompat:1.1.0'
 	}
+	
+我这里API28对应的是android9.0，当AndroidStudio运行项目的时候出现编译错误：Error: Program type already present: android.support.v4.app.INotificationSideChannel，这意思是v4包冲突了。
+
+首先，查找一下自己的文件里是否存在v4包重复的，搜索之后发现没有出现重复，针对这个问题查看了网上一些资料，发现这个问题是AndroidX版本引起的。有以下两种解决方法：
+
+1、Refactor-->Migrate to  AndroidX
+
+2、向gradle.properties添加以下内容：
+	
+	android.enableJetifier=true
+	android.useAndroidX=true
 
 单选时，在需要的地方调用：
 
