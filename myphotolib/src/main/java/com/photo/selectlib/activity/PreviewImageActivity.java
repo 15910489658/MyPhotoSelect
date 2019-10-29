@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.photo.selectlib.R;
 import com.photo.selectlib.bean.ImageFolderBean;
 import com.photo.selectlib.core.ImageSelectObservable;
@@ -56,6 +57,7 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 	/** 显示/隐藏 过程持续时间 */
 	private static final int SHOW_HIDE_CONTROL_ANIMATION_TIME = 500;
 	private ViewPager mPhotoPager;
+	private static boolean isSelect = false;
 
 	/**标题栏*/
 	private TitleView mTitleView;
@@ -63,7 +65,7 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 	private TextView mCheckedTv;
 	/**控制显示、隐藏顶部标题栏*/
 	private boolean isHeadViewShow = true;
-	private View mFooterView;
+	private static View mFooterView;
 
 	/**需要预览的所有图片*/
 	private List<ImageFolderBean> mAllImage;
@@ -73,10 +75,12 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 	/**
 	 * 预览文件夹下所有图片
 	 * @param activity Activity
+	 * @param mSelect 是否隐藏选中按钮 true 隐藏。，false 不隐藏
 	 * @param position position 当前显示位置
 	 * @param requestCode requestCode
      */
-	public static void startPreviewPhotoActivityForResult (Activity activity, int position, int requestCode) {
+	public static void startPreviewPhotoActivityForResult (Activity activity, int position, boolean mSelect, int requestCode) {
+		isSelect = mSelect;
 		Intent intent = new Intent(activity, PreviewImageActivity.class);
 		intent.putExtra("position", position);
 		activity.startActivityForResult(intent, requestCode);
@@ -86,9 +90,11 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 	/**
 	 * 预览选择的图片
 	 * @param activity Activity
+	 * @param mSelect 是否隐藏选中按钮 true 隐藏。，false 不隐藏
 	 * @param requestCode requestCode
      */
-	public static void startPreviewActivity (Activity activity, int requestCode) {
+	public static void startPreviewActivity (Activity activity, boolean mSelect, int requestCode) {
+		isSelect = mSelect;
 		Intent intent = new Intent(activity, PreviewImageActivity.class);
 		intent.putExtra("preview", true);
 		activity.startActivityForResult(intent, requestCode);
@@ -132,13 +138,18 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 		/*标题栏*/
 		mTitleView = (TitleView) findViewById(R.id.tv_large_image);
 		mTitleView.getLeftBackImageTv().setOnClickListener(this);
-		String title = getIntent().getIntExtra("position", 1) + "/" + mAllImage.size();
+		String title = getIntent().getIntExtra("position", 1)+1 + "/" + mAllImage.size();
 		mTitleView.getTitleTv().setText(title);
 		mTitleView.getRightTextTv().setOnClickListener(this);
 		mTitleView.getLeftBackImageTv().setOnClickListener(this);
 
 		/*底部菜单栏*/
 		mFooterView = findViewById(R.id.rl_check);
+		if(isSelect){
+			mFooterView.setVisibility(View.GONE);
+		}else{
+			mFooterView.setVisibility(View.VISIBLE);
+		}
 		mCheckedTv = (TextView) findViewById(R.id.ctv_check);
 		mCheckedTv.setEnabled(mAllImage.get(getIntent().getIntExtra("position", 0)).selectPosition > 0);
 		mFooterView.setOnClickListener(this);
@@ -219,7 +230,7 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 		public Object instantiateItem(ViewGroup container, int position) {
 			LayoutInflater inflater = LayoutInflater.from(PreviewImageActivity.this);
 			View view = inflater.inflate(R.layout.preview_image_item, container, false);
-			ImageView bigPhotoIv = (ImageView) view.findViewById(R.id.iv_image_item);
+			PhotoView bigPhotoIv = (PhotoView) view.findViewById(R.id.iv_image_item);
 			bigPhotoIv.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -280,7 +291,7 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 		mTitleView.startAnimation(animation);
 		mTitleView.setVisibility(View.VISIBLE);
 		mFooterView.startAnimation(animation);
-		mFooterView.setVisibility(View.VISIBLE);
+		mFooterView.setVisibility(isSelect?View.GONE:View.VISIBLE);
 	}
 
 	/**

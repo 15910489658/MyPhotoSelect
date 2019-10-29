@@ -10,21 +10,28 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.photo.selectlib.activity.FolderListActivity;
+import com.photo.selectlib.activity.MyJZVideoActivity;
+import com.photo.selectlib.activity.PreviewImageActivity;
 import com.photo.selectlib.bean.ImageFolderBean;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.photo.selectlib.core.ImageSelectObservable;
+import com.photo.selectlib.utils.DeviceIdUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private final int STORAGE_PERMISSION = 101;
+    private final int REQUEST_PREVIEW_PHOTO = 10;
     private ImageView iv_headimg;
 
     @Override
@@ -33,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         iv_headimg = findViewById(R.id.iv_headimg);
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+
+        String uniquePsuedoID = DeviceIdUtil.getUniquePsuedoID();
+        Log.e("uniquePsuedoID",uniquePsuedoID);
     }
 
     //单选
@@ -46,8 +57,27 @@ public class MainActivity extends AppCompatActivity {
         getStoragePermission(2);
     }
 
+    //unity返回地址预览图片
+    public void onTestImageClick(View view) {
+
+        ImageSelectObservable.getInstance().clearSelectImgs();
+        List<ImageFolderBean> list = new ArrayList<>();
+        list.add(new ImageFolderBean("/storage/emulated/0/Download/browser/图片收藏/bc305bcee6d91a8e0e8246.jpg"));
+        list.add(new ImageFolderBean("/storage/emulated/0/Download/browser/图片收藏/bef53244a078ab382e6750e867f252ca.jpg"));
+        list.add(new ImageFolderBean("/storage/emulated/0/Download/browser/图片收藏/469f996ebe4e0c358f94a724eb64ea92.jpg"));
+        list.add(new ImageFolderBean("/storage/emulated/0/Download/browser/图片收藏/fa0d4bd17ea85f7f2c3316e071140f3f.jpg"));
+        list.add(new ImageFolderBean("/storage/emulated/0/Download/browser/图片收藏/0f6109ffcfce5ca26ec912e5ed55f4c4.jpg"));
+        ImageSelectObservable.getInstance().addSelectImagesAndClearBefore(list);
+        PreviewImageActivity.startPreviewActivity(this,true, REQUEST_PREVIEW_PHOTO);
+    }
+
+    //播放视频
+    public void onVideoPlayerClick(View view) {
+        Intent intent = new Intent(MainActivity.this, MyJZVideoActivity.class);
+        startActivity(intent);
+    }
+
     private void getStoragePermission(int code) {
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 //没有权限则申请权限
@@ -67,12 +97,12 @@ public class MainActivity extends AppCompatActivity {
         switch (code) {
             case 1:
                 /*单选，参数对应的是context, 回调*/
-                FolderListActivity.startSelectSingleImgActivity(this, 2,true);
+                FolderListActivity.startSelectSingleImgActivity(this, 2,false);
                 break;
 
             case 2:
                 /*多选，参数对应context, 回调code, 传入的图片List, 可选的最大张数*/
-                FolderListActivity.startFolderListActivity(this, 1, null, 9);
+                FolderListActivity.startFolderListActivity(this, 1, null, 5);
                 break;
 
             default:
@@ -94,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     final StringBuilder stringBuffer = new StringBuilder();
                     for (ImageFolderBean string : list) {
                         stringBuffer.append(string.path).append("\n");
+                        Log.e("imageurl",string.path.trim());
                     }
                     Toast.makeText(MainActivity.this,stringBuffer.toString(),Toast.LENGTH_SHORT).show();
 

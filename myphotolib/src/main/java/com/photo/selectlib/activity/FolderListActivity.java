@@ -203,25 +203,6 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
         return data;
     }
 
-    /**
-     * 裁剪图片
-     */
-    private void cropPhoto(Uri uri) {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");
-        intent.putExtra("crop", "true");
-        intent.putExtra("scale", true);
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", 480);
-        intent.putExtra("outputY", 480);
-        intent.putExtra("noFaceDetection", true);
-        intent.putExtra("return-data", false);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(mTemporaryPath)));
-        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-        startActivityForResult(intent, MREQUEST_CODE);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public boolean handleMessage(Message msg) {

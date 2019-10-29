@@ -18,6 +18,17 @@
         android:layout_height="wrap_content"
         android:text="Double"/>
 
+    <Button
+        android:onClick="onTestImageClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="U to Android"/>
+
+    <Button
+        android:onClick="onVideoPlayerClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="video"/>
     <ImageView
         android:id="@+id/iv_headimg"
         android:background="#3333"

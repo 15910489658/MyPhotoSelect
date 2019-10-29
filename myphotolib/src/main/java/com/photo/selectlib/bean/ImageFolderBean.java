@@ -54,4 +54,11 @@ public class ImageFolderBean implements Serializable {
     public void setPath(String path) {
         this.path = path;
     }
+
+    public ImageFolderBean(String path) {
+        this.path = path;
+    }
+
+    public ImageFolderBean() {
+    }
 }

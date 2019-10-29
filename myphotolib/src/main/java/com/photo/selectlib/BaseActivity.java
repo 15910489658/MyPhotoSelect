@@ -41,6 +41,7 @@ public class BaseActivity extends Activity {
 
     public static void getInstance(Activity activity){
         mActivity = activity;
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(mActivity));
     }
 
     @Override

@@ -145,7 +145,7 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
             if (mAdapter.getSelectlist().size() <= 0) {
                 Toast.makeText(this, R.string.photo_no_select, Toast.LENGTH_SHORT).show();
             } else {
-                PreviewImageActivity.startPreviewActivity(this, REQUEST_PREVIEW_PHOTO);
+                PreviewImageActivity.startPreviewActivity(this, false ,REQUEST_PREVIEW_PHOTO);
             }
         } else if (id == R.id.tv_photo_ok) {
             setResult(RESULT_OK);
@@ -192,7 +192,7 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
         }
 
         if (position >= 0) {
-            PreviewImageActivity.startPreviewPhotoActivityForResult(this, position, REQUEST_PREVIEW_PHOTO);
+            PreviewImageActivity.startPreviewPhotoActivityForResult(this, position, false , REQUEST_PREVIEW_PHOTO);
         }
         mOkTv.setText(getResources().getString(R.string.photo_ok, mAdapter.getSelectlist().size()));
         mOkTv.setBackgroundResource(mAdapter.getSelectlist().size() > 0?R.drawable.shape_light_red_bg:R.drawable.shape_light_nomal_bg);

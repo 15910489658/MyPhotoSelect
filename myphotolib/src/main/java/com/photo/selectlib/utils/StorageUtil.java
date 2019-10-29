@@ -32,7 +32,6 @@ public class StorageUtil {
     }
 
     public void getStoragePermission(Activity mActivity,int code) {
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(mActivity));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 //没有权限则申请权限
