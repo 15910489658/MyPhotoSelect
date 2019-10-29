@@ -50,4 +50,26 @@ Toast使用方法：
 	     
 	ToastUtils.getInstance().showShort(this,"hello Toast!",false);
 	
+删除 app 目录下 unity-classes.jar
+
+在 app 目录下 UnityPlayerActivity onCreate方法进行初始化
+		
+	BaseActivity.getInstance(this);
+		
+重写 onActivityResult 方法调用 BaseActivity.onActivityResponse(requestCode,resultCode,data);进行回传
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        BaseActivity.onActivityResponse(requestCode,resultCode,data);
+    }
+    
+重写 onRequestPermissionsResult 方法，调用BaseActivity.onRequestPermissionsResponse(requestCode,permissions,grantResults);进行回调
+
+	@Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        BaseActivity.onRequestPermissionsResponse(requestCode,permissions,grantResults);
+    }
+	
 原文地址：https://github.com/JarekWang/photoselect
