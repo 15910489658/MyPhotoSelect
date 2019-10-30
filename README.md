@@ -76,12 +76,12 @@ Toast使用方法：
         BaseActivity.onActivityResponse(requestCode,resultCode,data);
     }
     
-重写 onRequestPermissionsResult 方法，调用BaseActivity.onRequestPermissionsResponse(requestCode,permissions,grantResults);进行回调
+重写 onRequestPermissionsResult 方法，调用StorageUtil.onRequestPermissionsResponse(this,requestCode,permissions,grantResults);进行回调
 
 	@Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        BaseActivity.onRequestPermissionsResponse(requestCode,permissions,grantResults);
+        StorageUtil.onRequestPermissionsResponse(this,requestCode,permissions,grantResults);
     }
 	
 原文地址：https://github.com/JarekWang/photoselect
