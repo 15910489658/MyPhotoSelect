@@ -31,6 +31,8 @@ Step 2. Add the dependency
 	android.enableJetifier=true
 	android.useAndroidX=true
 
+删除Unity工程app -> libs 下的 unity-classes.jar文件
+
 单选时，在需要的地方调用：
 
    /*单选，参数对应的是context, 回调*/
