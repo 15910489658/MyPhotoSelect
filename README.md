@@ -86,4 +86,16 @@ Toast使用方法：
         StorageUtil.onRequestPermissionsResponse(this,requestCode,permissions,grantResults);
     }
 	
+自定义打包名称
+	
+	defaultConfig {
+	......
+	android.applicationVariants.all {
+            variant ->
+                variant.outputs.all {
+                    //在这里修改apk文件名
+                    outputFileName = "lxt-v${variant.versionName}-v${versionCode}.apk"
+                }
+        }
+	}
 原文地址：https://github.com/JarekWang/photoselect
