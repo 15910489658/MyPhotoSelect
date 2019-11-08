@@ -94,7 +94,7 @@ Toast使用方法：
             variant ->
                 variant.outputs.all {
                     //在这里修改apk文件名
-                    outputFileName = "lxt-v${variant.versionName}-v${versionCode}.apk"
+                    outputFileName = "2019-11-08-v${variant.versionName}-c${versionCode}.apk"
                 }
         }
 	}
