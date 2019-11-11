@@ -86,6 +86,20 @@ Toast使用方法：
         StorageUtil.onRequestPermissionsResponse(this,requestCode,permissions,grantResults);
     }
 	
+合并：
+
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        BaseActivity.onActivityResponse(requestCode,resultCode,data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        StorageUtil.onRequestPermissionsResponse(this,requestCode,permissions,grantResults);
+    }
+    
 自定义打包名称
 	
 	defaultConfig {
