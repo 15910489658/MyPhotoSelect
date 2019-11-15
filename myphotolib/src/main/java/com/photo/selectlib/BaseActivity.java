@@ -131,12 +131,12 @@ public class BaseActivity extends Activity {
              * 参数二：解析成为的对象 例 User.class
              */
             UnityPreviewBean unityPreviewBean = new Gson().fromJson(JsonObject, UnityPreviewBean.class);
-            List<UnityPreviewBean.PreviewDataBean> previewbean = unityPreviewBean.getList();
+            List<UnityPreviewBean.PreviewDataBean> previewbean = unityPreviewBean.getData();
             ImageSelectObservable.getInstance().clearSelectImgs();
             List<ImageFolderBean> list = new ArrayList<>();
             if(previewbean != null && previewbean.size() > 0){
                 for (int i = 0; i < previewbean.size(); i++) {
-                    list.add(new ImageFolderBean(previewbean.get(i).getMemoryAddress()));
+                    list.add(new ImageFolderBean(previewbean.get(i).getImageUrl(),previewbean.get(i).getImagePath()));
                 }
             }
             ImageSelectObservable.getInstance().addSelectImagesAndClearBefore(list);
