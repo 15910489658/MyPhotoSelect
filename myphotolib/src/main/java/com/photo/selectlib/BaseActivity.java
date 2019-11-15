@@ -16,6 +16,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.photo.selectlib.activity.GSYVideoActivity;
 import com.photo.selectlib.activity.PreviewImageActivity;
+import com.photo.selectlib.activity.PreviewImageUnityActivity;
 import com.photo.selectlib.bean.ImageFolderBean;
 import com.photo.selectlib.bean.UnityPreviewBean;
 import com.photo.selectlib.core.ImageSelectObservable;
@@ -140,7 +141,7 @@ public class BaseActivity extends Activity {
                 }
             }
             ImageSelectObservable.getInstance().addSelectImagesAndClearBefore(list);
-            PreviewImageActivity.startPreviewActivity(this,false,true, 10);
+            PreviewImageUnityActivity.startPreviewActivity(this,false,true, 10);
         }
     }
 
