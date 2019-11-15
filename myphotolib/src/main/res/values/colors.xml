@@ -11,4 +11,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="album_finish">#593110</color>
+    <color name="preview_bottom_toolbar_bg">#CC000000</color>
+    <color name="preview_bottom_toolbar_bg_check">#000000</color>
+    <color name="preview_bottom_size">#61FFFFFF</color>
+    <color name="dialog_bg_color">#00FFFFFF</color>
+    <color name="tool_bar_bg_photo">#593110</color>
+    <color name="clip_image_title_bg">#593110</color>
+    <color name="view_white_bg">#D9ffffff</color>
+    <color name="preview_background_color">#ebebeb</color>
+    <color name="preview_recycler_background_color">#aeafae</color>
 </resources>

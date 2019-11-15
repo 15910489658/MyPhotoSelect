@@ -31,11 +31,15 @@ public class LocationUtils {
                     ActivityCompat.requestPermissions(activity, LOCATIONGPS,
                             BAIDU_READ_PHONE_STATE);
                 } else {
+                    //有权限
+                    UnitySendMessageUtil.getInstance().sendGPSPermission("200");
                 }
             } else {
+                //有权限
+                UnitySendMessageUtil.getInstance().sendGPSPermission("200");
             }
         } else {
-            Toast.makeText(activity, "系统检测到未开启GPS定位服务,请开启", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "系统检测到未开启GPS定位服务,请手动开启", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
             intent.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             activity.startActivityForResult(intent, PRIVATE_CODE);

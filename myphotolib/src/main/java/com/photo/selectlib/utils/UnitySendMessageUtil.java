@@ -1,11 +1,10 @@
 package com.photo.selectlib.utils;
-
 import com.unity3d.player.UnityPlayer;
 
 public class UnitySendMessageUtil {
 
     private static UnitySendMessageUtil mUnitySendMessageUtil;
-    private String s = "Main Camera";
+    private String s = "photoObj";
 
     public static UnitySendMessageUtil getInstance(){
         if(mUnitySendMessageUtil == null){
@@ -28,14 +27,14 @@ public class UnitySendMessageUtil {
          * 参数二：为Android调用Unity方法（.cs 脚本方法名称）
          * 参数三：为Android要传递给Unity的数据
          */
-        UnityPlayer.UnitySendMessage(s, "responseGPSPermissionCode", content);
+        UnityPlayer.UnitySendMessage(s, "ResponseGPSPermissionCode", content);
     }
 
     /**
      * 回调给Unity选择相册Json
      * @param content 照片信息Json
      */
-    public void senPhotoSelectResponse(String content){
+    public void sendPhotoSelectResponse(String content){
         /**
          * 参数一：为游戏物体名（挂脚本的名称）
          * 参数二：为Android调用Unity方法（.cs 脚本方法名称）
@@ -43,5 +42,6 @@ public class UnitySendMessageUtil {
          */
         UnityPlayer.UnitySendMessage(s, "ResponsePhotoSelectCutPath", content);
     }
+
 
 }

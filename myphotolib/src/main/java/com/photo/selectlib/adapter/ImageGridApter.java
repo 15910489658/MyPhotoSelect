@@ -139,7 +139,8 @@
                      subSelectPosition();
                  } else { //不在选择列表里，添加
                      if (mSelectlist.size() >= maxCount) {
-                         Toast.makeText(mContext, mContext.getResources().getString(R.string.publish_select_photo_max, maxCount), Toast.LENGTH_SHORT).show();
+//                         Toast.makeText(mContext, mContext.getResources().getString(R.string.publish_select_photo_max, maxCount), Toast.LENGTH_SHORT).show();//您最多选择xx张
+                         Toast.makeText(mContext, mContext.getResources().getString(R.string.publish_select_photo), Toast.LENGTH_SHORT).show();
                          return;
                      }
                      mSelectlist.add(imageBean);

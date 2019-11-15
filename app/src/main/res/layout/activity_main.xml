@@ -7,29 +7,34 @@
     tools:context=".MainActivity">
 
     <Button
+        android:visibility="gone"
         android:onClick="onSingleClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Single"/>
 
     <Button
+        android:visibility="gone"
         android:onClick="onDoubleClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Double"/>
 
     <Button
+        android:visibility="gone"
         android:onClick="onTestImageClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="U to Android"/>
 
     <Button
+        android:visibility="gone"
         android:onClick="onVideoPlayerClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="video"/>
     <ImageView
+        android:visibility="gone"
         android:id="@+id/iv_headimg"
         android:background="#3333"
         android:layout_margin="10dp"
@@ -37,5 +42,11 @@
         android:minHeight="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+    <Button
+        android:visibility="gone"
+        android:onClick="onVideoForAlbumClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="video for album"/>
 
 </LinearLayout>

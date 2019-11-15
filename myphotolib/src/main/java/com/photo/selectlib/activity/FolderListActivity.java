@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -15,16 +16,19 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.jaeger.library.StatusBarUtil;
 import com.photo.selectlib.R;
 import com.photo.selectlib.adapter.ImageFolderAdapter;
 import com.photo.selectlib.bean.ImageFolderBean;
 import com.photo.selectlib.core.ImageSelectObservable;
 import com.photo.selectlib.listener.OnRecyclerViewClickListener;
+import com.photo.selectlib.utils.AndroidWorkaround;
 import com.photo.selectlib.utils.ImageUtils;
 import com.photo.selectlib.utils.TitleView;
 import com.photo.selectlib.utils.ToastUtils;
@@ -98,6 +102,16 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.photo_folder_main);
+        /*全屏*/
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//        }
+        StatusBarUtil.setColor(FolderListActivity.this, getResources().getColor(R.color.album_finish));
+        //适配虚拟返回键盘
+        if (AndroidWorkaround.checkDeviceHasNavigationBar(this)) {
+            AndroidWorkaround.assistActivity(findViewById(android.R.id.content));
+        }
         mHandler = new Handler(this);
         mImageFolderList = new ArrayList<>();
         sMaxPicNum = getIntent().getIntExtra("max_num", DEFAULT_MAX_PIC_NUM);
@@ -268,7 +282,7 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
                  if(uri == null){
                          return;
                      }
-                 Intent intent = new Intent(this,ClipImageActivity.class);
+                 Intent intent = new Intent(FolderListActivity.this,ClipImageActivity.class);
                  intent.putExtra("type",1);
                  intent.setData(uri);
                  startActivityForResult(intent,MREQUEST_CODE);

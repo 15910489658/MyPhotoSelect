@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_height"
         app:left_image="@drawable/btn_back"
-        android:background="@color/red_light"
+        android:background="@color/clip_image_title_bg"
         app:title_text_color="@android:color/white"
         app:title_text_size="20sp"
         app:title_name="@string/photo_folder_select" />

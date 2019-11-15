@@ -1,17 +1,21 @@
 package com.photo.selectlib.activity;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.jaeger.library.StatusBarUtil;
 import com.photo.selectlib.R;
 import com.photo.selectlib.view.ClipViewLayout;
 
@@ -22,7 +26,7 @@ import java.io.OutputStream;
 /**
  * 图片剪切
  */
-public class ClipImageActivity extends AppCompatActivity implements View.OnClickListener {
+public class ClipImageActivity extends Activity implements View.OnClickListener {
 
     private ClipViewLayout clipViewLayout1;
     private ClipViewLayout clipViewLayout2;
@@ -35,6 +39,12 @@ public class ClipImageActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clip_image);
+        /*全屏*/
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//        }
+        StatusBarUtil.setColor(ClipImageActivity.this, getResources().getColor(R.color.album_finish));
         type = getIntent().getIntExtra("type",1);
         initView();
     }

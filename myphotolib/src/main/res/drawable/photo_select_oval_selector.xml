@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
+<!--    <item android:state_enabled="true">-->
+<!--        <shape android:shape="oval">-->
+<!--            <stroke android:color="@color/white" android:width="1dp"/>-->
+<!--            <solid android:color="@color/title_bg"/>-->
+<!--        </shape>-->
+<!--        </item>-->
+
+<!--    <item android:state_enabled="false">-->
+
+
+<!--        <shape android:shape="oval">-->
+<!--            <stroke android:color="@color/white" android:width="1dp"/>-->
+<!--            <solid android:color="@color/half_trans_bg"/>-->
+<!--        </shape>-->
+<!--    </item>-->
+
     <item android:state_enabled="true">
+<!--        <shape android:shape="oval">-->
+<!--            <stroke android:color="@color/white" android:width="1dp"/>-->
+<!--            <solid android:color="@color/title_bg"/>-->
+<!--        </shape>-->
         <shape android:shape="oval">
-            <stroke android:color="@color/white" android:width="1dp"/>
-            <solid android:color="@color/title_bg"/>
+            <solid android:color="#3f7735"/>
+            <size android:width="17dp" android:height="17dp"/>
         </shape>
-        </item>
+    </item>
 
-    <item android:state_enabled="false">
-
-
-        <shape android:shape="oval">
-            <stroke android:color="@color/white" android:width="1dp"/>
-            <solid android:color="@color/half_trans_bg"/>
-        </shape>
+    <item android:state_enabled="false" android:drawable="@drawable/oval_normal">
+<!--        <shape android:shape="oval">-->
+<!--            <stroke android:color="@color/white" android:width="1dp"/>-->
+<!--            <solid android:color="@color/half_trans_bg"/>-->
+<!--        </shape>-->
     </item>
 </selector>

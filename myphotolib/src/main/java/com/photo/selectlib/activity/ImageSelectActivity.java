@@ -2,12 +2,17 @@ package com.photo.selectlib.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,13 +20,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.jaeger.library.StatusBarUtil;
 import com.photo.selectlib.R;
 import com.photo.selectlib.adapter.ImageGridApter;
 import com.photo.selectlib.bean.ImageFolderBean;
 import com.photo.selectlib.core.ImageSelectObservable;
 import com.photo.selectlib.listener.OnRecyclerViewClickListener;
 import com.photo.selectlib.utils.ImageUtils;
-import com.photo.selectlib.utils.TitleView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Collection;
@@ -56,6 +61,9 @@ import java.util.Observer;
  */
 public class ImageSelectActivity extends Activity implements Callback, OnClickListener, OnRecyclerViewClickListener, Observer {
 
+    private TextView tv_select_finish;
+    private CheckBox rb_original_image;
+
     public static void startPhotoSelectGridActivity(Activity activity, String folder, boolean singleSelect, int maxCount, int requestCode) {
         Intent intent = new Intent(activity, ImageSelectActivity.class);
         intent.putExtra("data", folder);
@@ -89,6 +97,16 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.photo_gridview_main);
+        StatusBarUtil.setColor(ImageSelectActivity.this, getResources().getColor(R.color.album_finish));
+        //适配虚拟返回键盘
+//        if (AndroidWorkaround.checkDeviceHasNavigationBar(this)) {
+//            AndroidWorkaround.assistActivity(findViewById(android.R.id.content));
+//        }
+        /*全屏*/
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//        }
         ImageSelectObservable.getInstance().addObserver(this);
         mHandler = new Handler(this);
         mIsSelectSingleImge = getIntent().getBooleanExtra("single", false);
@@ -118,8 +136,27 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
      * <li>初始化view</li>
      */
     private void initView() {
-        TitleView titleView = (TitleView) findViewById(R.id.tv_photo_title);
-        titleView.getLeftBackImageTv().setOnClickListener(this);
+//        TitleView titleView = (TitleView) findViewById(R.id.tv_photo_title);
+//        titleView.getLeftBackImageTv().setOnClickListener(this);
+
+        ImageView iv_select_back = findViewById(R.id.iv_select_back);
+        tv_select_finish = findViewById(R.id.tv_select_finish);
+        rb_original_image = findViewById(R.id.rb_original_image);
+        iv_select_back.setOnClickListener(this);
+        tv_select_finish.setOnClickListener(this);
+        rb_original_image.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                rb_original_image.setChecked(isChecked);
+            }
+        });
+
+        findViewById(R.id.ll_photo_operation).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
 
         /*这里直接设置表格布局，三列*/
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.lv_photo_folder);
@@ -127,12 +164,13 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setHasFixedSize(true);
 
-        mAdapter = new ImageGridApter(this, ImageSelectObservable.getInstance().getFolderAllImages(), mIsSelectSingleImge, getIntent().getIntExtra("maxCount", 9));
+        mAdapter = new ImageGridApter(this, ImageSelectObservable.getInstance().getFolderAllImages(), mIsSelectSingleImge, getIntent().getIntExtra("maxCount", 1));
         mAdapter.setOnClickListener(this);
         recyclerView.setAdapter(mAdapter);
 
         mOkTv = (TextView) findViewById(R.id.tv_photo_ok);
         mOkTv.setText(String.format(getResources().getString(R.string.photo_ok), mAdapter.getSelectlist().size()));
+        tv_select_finish.setText(String.format(getResources().getString(R.string.photo_ok_finish), mAdapter.getSelectlist().size())+ "/"+getIntent().getIntExtra("maxCount", 1)+")");
         findViewById(R.id.tv_photo_scan).setOnClickListener(this);
         mOkTv.setOnClickListener(this);
 
@@ -145,12 +183,17 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
             if (mAdapter.getSelectlist().size() <= 0) {
                 Toast.makeText(this, R.string.photo_no_select, Toast.LENGTH_SHORT).show();
             } else {
-                PreviewImageActivity.startPreviewActivity(this, false ,REQUEST_PREVIEW_PHOTO);
+                PreviewImageActivity.startPreviewActivity(this, false ,false,REQUEST_PREVIEW_PHOTO);
             }
         } else if (id == R.id.tv_photo_ok) {
             setResult(RESULT_OK);
             this.finish();
         } else if (id == R.id.iv_left_image) {
+            this.finish();
+        }else if(id == R.id.tv_select_finish){
+            setResult(RESULT_OK);
+            this.finish();
+        }else if(id == R.id.iv_select_back){
             this.finish();
         }
     }
@@ -164,6 +207,7 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
             if (requestCode == REQUEST_PREVIEW_PHOTO) {
                 mAdapter.notifyDataSetChanged();
                 mOkTv.setText(getResources().getString(R.string.photo_ok, mAdapter.getSelectlist().size()));
+                tv_select_finish.setText(getResources().getString(R.string.photo_ok_finish, mAdapter.getSelectlist().size())+ "/"+getIntent().getIntExtra("maxCount", 1)+")");
                 mOkTv.setBackgroundResource(mAdapter.getSelectlist().size() > 0?R.drawable.shape_light_red_bg:R.drawable.shape_light_nomal_bg);
             }
         }
@@ -192,9 +236,10 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
         }
 
         if (position >= 0) {
-            PreviewImageActivity.startPreviewPhotoActivityForResult(this, position, false , REQUEST_PREVIEW_PHOTO);
+            PreviewImageActivity.startPreviewPhotoActivityForResult(this, position, false ,false, REQUEST_PREVIEW_PHOTO,getIntent().getIntExtra("maxCount", 1));
         }
         mOkTv.setText(getResources().getString(R.string.photo_ok, mAdapter.getSelectlist().size()));
+        tv_select_finish.setText(getResources().getString(R.string.photo_ok_finish, mAdapter.getSelectlist().size())+ "/"+getIntent().getIntExtra("maxCount", 1)+")");
         mOkTv.setBackgroundResource(mAdapter.getSelectlist().size() > 0?R.drawable.shape_light_red_bg:R.drawable.shape_light_nomal_bg);
 
     }
@@ -208,6 +253,7 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
     public void update(Observable o, Object arg) {
         mAdapter.notifyDataSetChanged();
         mOkTv.setText(getResources().getString(R.string.photo_ok, mAdapter.getSelectlist().size()));
+        tv_select_finish.setText(getResources().getString(R.string.photo_ok_finish, mAdapter.getSelectlist().size())+ "/"+getIntent().getIntExtra("maxCount", 1)+")");
         mOkTv.setBackgroundResource(mAdapter.getSelectlist().size() > 0?R.drawable.shape_light_red_bg:R.drawable.shape_light_nomal_bg);
     }
 }

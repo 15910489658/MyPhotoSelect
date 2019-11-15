@@ -34,11 +34,11 @@
             android:background="@color/half_trans_bg"
             android:contentDescription="@null"
             android:visibility="gone"/>
-        
+
         <TextView
             android:id="@+id/tv_select"
-            android:layout_width="@dimen/photo_select_oval_size"
-            android:layout_height="@dimen/photo_select_oval_size"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
             android:layout_alignRight="@+id/iv_pic"
             android:layout_alignTop="@+id/iv_pic"
             android:layout_marginRight="5dp"
@@ -47,7 +47,6 @@
             android:enabled="true"
             android:gravity="center"
             android:textSize="12sp"
-            android:text="12"
             android:textColor="@android:color/white"
             android:visibility="visible"/>
 

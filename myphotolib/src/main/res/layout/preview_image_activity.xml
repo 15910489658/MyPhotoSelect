@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#202020"
+    android:background="@color/preview_background_color"
     android:orientation="vertical" >
 
     <androidx.viewpager.widget.ViewPager
@@ -13,7 +13,7 @@
     </androidx.viewpager.widget.ViewPager>
 
     <com.photo.selectlib.utils.TitleView
-        android:id="@+id/tv_large_image"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_height"
         android:layout_alignParentLeft="true"
@@ -23,27 +23,72 @@
         app:small_text_size="15sp"
         app:title_text_color="@android:color/white"
         app:left_image="@drawable/btn_back"
-        android:background="@color/title_bg"
+        android:background="@color/clip_image_title_bg"
         />
+
+    <RelativeLayout
+        android:paddingLeft="60px"
+        android:paddingRight="60px"
+        android:background="@color/clip_image_title_bg"
+        android:id="@+id/rl_large_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/iv_preview_select_back"
+            android:layout_centerVertical="true"
+            android:src="@drawable/btn_back"
+            android:layout_width="12dp"
+            android:layout_height="22dp"/>
+
+        <TextView
+            android:layout_centerInParent="true"
+            android:textSize="17sp"
+            android:textColor="@color/white"
+            android:text="@string/photo_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tv_preview_select_finish"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textSize="13sp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/album_finish"
+            android:text="@string/photo_finish"
+            android:background="@drawable/shape_light_red_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_preview_photo"
+        android:background="@color/preview_recycler_background_color"
+        android:layout_above="@id/rl_check"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"/>
 
     <RelativeLayout
         android:id="@+id/rl_check"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:background="@android:color/transparent"
-        android:visibility="gone"
-        android:padding="7dp" >
+        android:background="@color/preview_background_color">
 
         <TextView
             android:id="@+id/ctv_check"
-            android:layout_width="@dimen/photo_select_preview"
-            android:layout_height="@dimen/photo_select_preview"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="1dp"
             android:layout_toLeftOf="@+id/tv_check"
-            android:background="@drawable/photo_select_oval_selector"
+            android:background="@drawable/photo_select_oval_selector_2"
             android:enabled="false"
             android:clickable="false"
             android:gravity="center"
@@ -56,12 +101,26 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="6dp"
+            android:clickable="false"
             android:gravity="center"
             android:padding="4dp"
             android:text="@string/photo_to_choose"
-            android:textSize="16sp"
-            android:clickable="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/preview_bottom_toolbar_bg_check"
+            android:textSize="15sp" />
+
+        <CheckBox
+            android:id="@+id/rb_original_image"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_original"
+            android:button="@null"
+            android:textSize="15sp"
+            android:checked="false"
+            android:stateListAnimator="@null"
+            android:drawableLeft="@drawable/selector_radio"
+            android:drawablePadding="7dp"/>
+
     </RelativeLayout>
 
 </RelativeLayout>

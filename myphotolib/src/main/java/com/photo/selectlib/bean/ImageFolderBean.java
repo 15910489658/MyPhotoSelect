@@ -47,6 +47,19 @@ public class ImageFolderBean implements Serializable {
     /**当前图片在列表中顺序*/
     public int position;
 
+    /**
+     * 是否为查看图片
+     */
+    public boolean isSelect;
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
+    }
+
     public String getPath() {
         return path;
     }

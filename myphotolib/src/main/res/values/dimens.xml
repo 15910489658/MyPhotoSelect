@@ -7,4 +7,8 @@
     <dimen name="photo_select_oval_size">23dp</dimen>
     <dimen name="photo_select_preview">27dp</dimen>
     <dimen name="title_height">50dp</dimen>
+    <dimen name="media_grid_size">48dp</dimen>
+    <dimen name="media_grid_spacing">4dp</dimen>
+
+    <dimen name="album_item_height">72dp</dimen>
 </resources>
