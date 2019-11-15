@@ -52,6 +52,21 @@ public class ImageFolderBean implements Serializable {
      */
     public boolean isSelect;
 
+    /**
+     * 图片缩略图
+     * @return
+     */
+
+    public String ImageThumbnail;
+
+    public String getImageThumbnail() {
+        return ImageThumbnail;
+    }
+
+    public void setImageThumbnail(String imageThumbnail) {
+        ImageThumbnail = imageThumbnail;
+    }
+
     public boolean isSelect() {
         return isSelect;
     }
@@ -68,8 +83,14 @@ public class ImageFolderBean implements Serializable {
         this.path = path;
     }
 
-    public ImageFolderBean(String path) {
+    /**
+     *
+     * @param path 下载地址
+     * @param imagethumbnail 缩略图地址
+     */
+    public ImageFolderBean(String path,String imagethumbnail) {
         this.path = path;
+        this.ImageThumbnail = imagethumbnail;
     }
 
     public ImageFolderBean() {

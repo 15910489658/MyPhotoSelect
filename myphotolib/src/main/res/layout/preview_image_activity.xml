@@ -51,6 +51,7 @@
 
         <TextView
             android:id="@+id/tv_preview_select_finish"
+            android:visibility="gone"
             android:textStyle="bold"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
@@ -69,6 +70,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_preview_photo"
+        android:visibility="gone"
         android:background="@color/preview_recycler_background_color"
         android:layout_above="@id/rl_check"
         android:layout_width="match_parent"
@@ -76,6 +78,7 @@
 
     <RelativeLayout
         android:id="@+id/rl_check"
+        android:visibility="gone"
         android:layout_width="fill_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
