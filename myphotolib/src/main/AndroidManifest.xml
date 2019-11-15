@@ -32,6 +32,8 @@
             android:theme="@style/MyAppTheme" />
         <activity android:name=".activity.PreviewImageActivity"
             android:theme="@style/MyAppTheme"/>
+        <activity android:name=".activity.PreviewImageUnityActivity"
+            android:theme="@style/MyAppTheme"/>
 
         <activity android:name=".matisse.ui.MatisseActivity"
             android:theme="@style/MyAppTheme"/>
