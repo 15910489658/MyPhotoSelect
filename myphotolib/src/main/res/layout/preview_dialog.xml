@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_take_photo"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -15,6 +16,7 @@
         android:textSize="16sp" />
 
     <View
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray" />

@@ -32,8 +32,10 @@ import com.photo.selectlib.core.ImageSelectObservable;
 import com.photo.selectlib.listener.OnRecyclerViewClickListener;
 import com.photo.selectlib.listener.RecyclerViewSmoothMoveToPositionUtil;
 import com.photo.selectlib.listener.SpacesItemDecoration;
+import com.photo.selectlib.utils.LogUtil;
 import com.photo.selectlib.utils.ShowBottomDialog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,11 +118,12 @@ public class PreviewImageUnityActivity extends Activity implements OnClickListen
 	 * @param mUnity 是否是从Unity直接调取的预览
 	 * @param requestCode requestCode
 	 */
-	public static void startPreviewActivity (Activity activity, boolean mSelect, boolean mUnity, int requestCode) {
+	public static void startPreviewActivity (Activity activity, int position, boolean mSelect, boolean mUnity, int requestCode) {
 		isSelect = mSelect;
 		isUnity = mUnity;
 		Intent intent = new Intent(activity, PreviewImageUnityActivity.class);
 		intent.putExtra("preview", true);
+		intent.putExtra("position", position);
 		activity.startActivityForResult(intent, requestCode);
 		activity.overridePendingTransition(R.anim.common_scale_small_to_large, 0);
 	}
@@ -149,13 +152,15 @@ public class PreviewImageUnityActivity extends Activity implements OnClickListen
 		mSelectImage = ImageSelectObservable.getInstance().getSelectImages();
 		mPosition = getIntent().getIntExtra("position", 1);
 
-		if (getIntent().getBooleanExtra("preview", false)) {
-			mAllImage.addAll(ImageSelectObservable.getInstance().getSelectImages());
-			mAllImage.get(0).setSelect(true);
-			mPosition = 0;
-		} else {
-			mAllImage.addAll(ImageSelectObservable.getInstance().getFolderAllImages());
-			mAllImage.get(mPosition).setSelect(true);
+		if(mSelectImage.size() > 0 && mSelectImage != null) {
+			if (getIntent().getBooleanExtra("preview", false)) {
+				mAllImage.addAll(ImageSelectObservable.getInstance().getSelectImages());
+				mAllImage.get(0).setSelect(true);
+				mPosition = 0;
+			} else {
+				mAllImage.addAll(ImageSelectObservable.getInstance().getFolderAllImages());
+				mAllImage.get(mPosition).setSelect(true);
+			}
 		}
 	}
 
@@ -334,7 +339,10 @@ public class PreviewImageUnityActivity extends Activity implements OnClickListen
 						fromPath = getResources().getDrawable(R.drawable.defaultpic);
 					}
 
-					Glide.with(PreviewImageUnityActivity.this).load(photos.get(position).path).error(fromPath).placeholder(fromPath).into(bigPhotoIv);
+//					Glide.with(PreviewImageUnityActivity.this).load(photos.get(position).path).error(fromPath).placeholder(fromPath).into(bigPhotoIv);
+//					Glide.with(PreviewImageUnityActivity.this).load(new File(photos.get(position).path)).error(fromPath).placeholder(fromPath).into(bigPhotoIv);
+					LogUtil.e("UnityFileCompletePath",position+"  "  +photos.get(position).ImageThumbnail);
+					ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(photos.get(position).ImageThumbnail), bigPhotoIv);
 				}
 			}
 			container.addView(view);

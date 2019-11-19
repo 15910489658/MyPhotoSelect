@@ -4,9 +4,16 @@ import java.util.List;
 
 public class UnityPreviewBean {
 
-
     private List<PreviewDataBean> data;
     private int Position;
+
+    public int getPosition() {
+        return Position;
+    }
+
+    public void setPosition(int position) {
+        Position = position;
+    }
 
     public class PreviewDataBean {
         private String ImageUrl;//图片Url地址
@@ -29,19 +36,11 @@ public class UnityPreviewBean {
         }
     }
 
-    public int getPosition() {
-        return Position;
-    }
-
-    public void setPosition(int position) {
-        Position = position;
-    }
-
     public List<PreviewDataBean> getData() {
         return data;
     }
 
-    public void setData(List<PreviewDataBean> list) {
-        this.data = list;
+    public void setData(List<PreviewDataBean> data) {
+        this.data = data;
     }
 }

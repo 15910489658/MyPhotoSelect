@@ -41,7 +41,7 @@ import java.util.List;
 
 public class BaseActivity extends Activity {
 
-    private static Activity mActivity;
+    public static Activity mActivity;
     private static String request_className ;
 
     public static void getInstance(Activity activity){
@@ -123,6 +123,7 @@ public class BaseActivity extends Activity {
      * @param JsonObject 需要解析的Json串
      */
     public void OpenPreviewImage(String JsonObject){
+        LogUtil.e("UnityJsonObject",JsonObject);
         //解析Json串
         if(TextUtils.isEmpty(JsonObject)){
             ToastUtils.getInstance().showShort(mActivity,getString(R.string.preview_image_failure),false);
@@ -137,11 +138,16 @@ public class BaseActivity extends Activity {
             List<ImageFolderBean> list = new ArrayList<>();
             if(previewbean != null && previewbean.size() > 0){
                 for (int i = 0; i < previewbean.size(); i++) {
-                    list.add(new ImageFolderBean(previewbean.get(i).getImageUrl(),previewbean.get(i).getImagePath()));
+                    LogUtil.e("UnityImageUrl",previewbean.get(i).getImageUrl());
+                    LogUtil.e("UnityImagePath",previewbean.get(i).getImagePath());
+                    LogUtil.e("UnityFilePath",mActivity.getExternalFilesDir("").getAbsolutePath());
+
+                    LogUtil.e("UnityFileCompletePath",mActivity.getExternalFilesDir("").getAbsolutePath()+"/"+previewbean.get(i).getImagePath());
+                    list.add(new ImageFolderBean(previewbean.get(i).getImageUrl(),mActivity.getExternalFilesDir("").getAbsolutePath()+"/"+previewbean.get(i).getImagePath()));
                 }
             }
             ImageSelectObservable.getInstance().addSelectImagesAndClearBefore(list);
-            PreviewImageUnityActivity.startPreviewActivity(this,false,true, 10);
+            PreviewImageUnityActivity.startPreviewActivity(mActivity,unityPreviewBean.getPosition(),false,true, 10);
         }
     }
 
@@ -175,9 +181,9 @@ public class BaseActivity extends Activity {
                             JSONObject jsonObject1 = new JSONObject();
                             stringBuffer.append(string.path).append("\n");
 //                            String InCodeString = TranslationUtil.getInstance().convertIconToString(BitmapFactory.decodeFile(string.path.trim()));
-                            String path = SaveBitmapToBytesUtil.getInstance().savePhotoToSDCardByte(string.path.trim(),BitmapFactory.decodeFile(string.path.trim()), TranslationUtil.getInstance().getFileName(string.path.trim()));
+//                            String path = SaveBitmapToBytesUtil.getInstance().savePhotoToSDCardByte(string.path.trim(),BitmapFactory.decodeFile(string.path.trim()), TranslationUtil.getInstance().getFileName(string.path.trim()));
                             jsonObject1.put("MemoryAddress",string.path.trim());
-                            jsonObject1.put("InCodeString",path);
+                            jsonObject1.put("InCodeString",string.path.trim());
                             int[] imageWidthHeight =  getImageWidthHeight(string.path);
                             if(imageWidthHeight != null && imageWidthHeight.length != 0){
                                 float width = imageWidthHeight[0];
@@ -193,6 +199,7 @@ public class BaseActivity extends Activity {
                         jsonObject.put("type",request_className);
                         LogUtil.e("photoClass",request_className);
                         jsonObject.put("data",jsonArray);
+                        LogUtil.e("ImageInCodeJsonObject:",jsonObject.toString());
                         UnitySendMessageUtil.getInstance().sendPhotoSelectResponse(jsonObject.toString());
 
                     } catch (JSONException e) {
@@ -213,10 +220,10 @@ public class BaseActivity extends Activity {
                             JSONObject jsonObject1 = new JSONObject();
                             stringBuffer.append(string).append("\n");
 //                            String InCodeString = TranslationUtil.getInstance().convertIconToString(BitmapFactory.decodeFile(string.trim()));
-                            String path = SaveBitmapToBytesUtil.getInstance().savePhotoToSDCardByte(string.trim(),BitmapFactory.decodeFile(string.trim()), TranslationUtil.getInstance().getFileName(string.trim()));
+//                            String path = SaveBitmapToBytesUtil.getInstance().savePhotoToSDCardByte(string.trim(),BitmapFactory.decodeFile(string.trim()), TranslationUtil.getInstance().getFileName(string.trim()));
 //                          LogUtil.e("saveBitmapSize",BitmapFactory.decodeFile(path).getByteCount()+" saveBitmapPath:"+path);
                             jsonObject1.put("MemoryAddress",string.trim());
-                            jsonObject1.put("InCodeString",path);
+                            jsonObject1.put("InCodeString",string.trim());
                             int[] imageWidthHeight =  getImageWidthHeight(string);
                             if(imageWidthHeight != null && imageWidthHeight.length != 0){
                                 float width = imageWidthHeight[0];

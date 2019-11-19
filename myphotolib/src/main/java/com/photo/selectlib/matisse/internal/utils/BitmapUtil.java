@@ -1,4 +1,4 @@
-package com.photo.selectlib.internal.utils;
+package com.photo.selectlib.matisse.internal.utils;
 
 import android.app.Activity;
 import android.graphics.Bitmap;

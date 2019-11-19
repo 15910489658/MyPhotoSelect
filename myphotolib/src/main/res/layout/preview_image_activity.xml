@@ -78,7 +78,6 @@
 
     <RelativeLayout
         android:id="@+id/rl_check"
-        android:visibility="gone"
         android:layout_width="fill_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
@@ -86,16 +85,14 @@
 
         <TextView
             android:id="@+id/ctv_check"
-            android:layout_width="17dp"
-            android:layout_height="17dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="1dp"
             android:layout_toLeftOf="@+id/tv_check"
             android:background="@drawable/photo_select_oval_selector_2"
-            android:enabled="false"
-            android:clickable="false"
             android:gravity="center"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_check"
@@ -108,8 +105,25 @@
             android:gravity="center"
             android:padding="4dp"
             android:text="@string/photo_to_choose"
+            android:visibility="gone"
             android:textColor="@color/preview_bottom_toolbar_bg_check"
             android:textSize="15sp" />
+
+        <CheckBox
+            android:id="@+id/cb_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/photo_to_choose"
+            android:layout_marginRight="6dp"
+            android:clickable="false"
+            android:button="@null"
+            android:textSize="15sp"
+            android:checked="false"
+            android:stateListAnimator="@null"
+            android:drawableLeft="@drawable/selector_radio"
+            android:drawablePadding="7dp"/>
 
         <CheckBox
             android:id="@+id/rb_original_image"

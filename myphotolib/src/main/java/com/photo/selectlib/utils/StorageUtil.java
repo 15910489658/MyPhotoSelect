@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.photo.selectlib.BaseActivity;
 import com.photo.selectlib.activity.FolderListActivity;
 import com.photo.selectlib.matisse.Matisse;
 import com.photo.selectlib.matisse.MimeType;
@@ -45,17 +46,17 @@ public class StorageUtil {
         mCode = code;
         mMaxNumber = maxNumber;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(BaseActivity.mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 //没有权限则申请权限
-                ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION);
+                ActivityCompat.requestPermissions(BaseActivity.mActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION);
             } else {
                 //有权限直接执行,docode()不用做处理
-                doCode(mActivity,code,maxNumber);
+                doCode(BaseActivity.mActivity,code,maxNumber);
 
             }
         } else {
             //小于6.0，不用申请权限，直接执行
-            doCode(mActivity,code,maxNumber);
+            doCode(BaseActivity.mActivity,code,maxNumber);
         }
     }
 
@@ -63,7 +64,7 @@ public class StorageUtil {
         switch (code) {
             case 1:
                 /*单选，参数对应的是context, 回调*/
-                FolderListActivity.startSelectSingleImgActivity(mActivity, 2,true);
+                FolderListActivity.startSelectSingleImgActivity(BaseActivity.mActivity, 2,true);
 //                Matisse.from(mActivity)
 //                        .choose(MimeType.ofImage(), false)      // 展示所有类型文件（图片 视频 gif）
 //                        .capture(false)                        // 可拍照
@@ -83,11 +84,11 @@ public class StorageUtil {
 
             case 2:
                 /*多选，参数对应context, 回调code, 传入的图片List, 可选的最大张数*/
-                FolderListActivity.startFolderListActivity(mActivity, 1, null, 9);
+                FolderListActivity.startFolderListActivity(BaseActivity.mActivity, 1, null, 9);
                 break;
 
             case 3:
-                FolderListActivity.startFolderListActivity(mActivity, 1, null, maxNumber);
+                FolderListActivity.startFolderListActivity(BaseActivity.mActivity, 1, null, maxNumber);
 //                Matisse.from(mActivity)
 //                        .choose(MimeType.ofImage(), false)      // 展示所有类型文件（图片 视频 gif）
 //                        .capture(false)                        // 可拍照
@@ -131,9 +132,9 @@ public class StorageUtil {
             case STORAGE_PERMISSION:
                 if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
                     //执行代码,这里是已经申请权限成功了,可以不用做处理
-                    doCode(mActivity,mCode,mMaxNumber);
+                    doCode(BaseActivity.mActivity,mCode,mMaxNumber);
                 }else{
-//                    Toast.makeText(mActivity,"权限申请失败",Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(BaseActivity.mActivity,"权限申请失败",Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
