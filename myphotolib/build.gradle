@@ -30,18 +30,20 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    compileOnly files('libs/universal-image-loader-1.9.5.jar')
     compileOnly 'androidx.recyclerview:recyclerview:1.0.0'
     compileOnly 'it.sephiroth.android.library.imagezoom:library:1.0.4'
     compileOnly 'androidx.cardview:cardview:1.0.0'
     compileOnly 'com.github.chrisbanes:PhotoView:2.0.0'
     compileOnly 'com.nineoldandroids:library:2.4.0'
     compileOnly 'com.github.bumptech.glide:glide:3.7.0'
-    //完整版引入
-    compileOnly 'com.shuyu:GSYVideoPlayer:7.1.1'
-    api files('libs/unity-classes.jar')
-    compileOnly files('libs/commons-io-2.6.jar')
     compileOnly 'com.google.code.gson:gson:2.8.5'
     compileOnly 'com.jaeger.statusbarutil:library:1.4.0'
     compileOnly 'me.jessyan:autosize:1.1.2'//今日头条适配
+    //完整版引入
+    compileOnly 'com.shuyu:GSYVideoPlayer:7.1.1'
+
+    api files('libs/unity-classes.jar')
+    implementation files('libs/commons-io-2.6.jar')
+    implementation files('libs/universal-image-loader-1.9.5.jar')
+
 }
