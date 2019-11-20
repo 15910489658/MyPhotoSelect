@@ -32,4 +32,16 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':myphotolib')
+
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'it.sephiroth.android.library.imagezoom:library:1.0.4'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.jaeger.statusbarutil:library:1.4.0'
+    implementation 'me.jessyan:autosize:1.1.2'//今日头条适配
+    //完整版引入
+    implementation 'com.shuyu:GSYVideoPlayer:7.1.1'
 }
