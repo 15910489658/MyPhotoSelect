@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
+def and = rootProject.ext.android
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.0"
+    compileSdkVersion and.compileSdkVersion
+    buildToolsVersion and.buildToolsVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -10,11 +11,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.photo.select"
-        minSdkVersion 19
-        targetSdkVersion 29
-        versionCode 2
-        versionName "1.0.1"
+        applicationId and.applicationId
+        minSdkVersion and.minSdkVersion
+        targetSdkVersion and.targetSdkVersion
+        versionCode and.versionCode
+        versionName and.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -27,21 +28,11 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation project(path: ':myphotolib')
-
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'it.sephiroth.android.library.imagezoom:library:1.0.4'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
-    implementation 'com.nineoldandroids:library:2.4.0'
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
-    implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.jaeger.statusbarutil:library:1.4.0'
-    implementation 'me.jessyan:autosize:1.1.2'//今日头条适配
-    //完整版引入
-    implementation 'com.shuyu:GSYVideoPlayer:7.1.1'
+    def sdc = rootProject.ext.systemDepencies
+    def lin = rootProject.ext.libFileImplementation
+    implementation sdc.appcompat
+    testImplementation sdc.junit
+    androidTestImplementation sdc.runner
+    androidTestImplementation sdc.espresso
+    implementation project(path: lin.myphotolib)
 }
