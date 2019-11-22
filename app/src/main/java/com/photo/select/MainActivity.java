@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             }
             ToastUtils.getInstance().showLong(this,stringBuffer.toString(),false);
         }
-        }
+    }
 
     public void onVideoForAlbumClick(View view) {
     }
