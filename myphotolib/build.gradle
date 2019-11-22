@@ -3,12 +3,14 @@ apply plugin: 'com.github.dcendents.android-maven'//依赖maven库用以生成�
 group='com.github.JulyJiangL'
 
 android {
-    compileSdkVersion 28
+    def globalConfiguration = rootProject.extensions.getByName("ext").android
+
+    compileSdkVersion globalConfiguration.compileSdkVersion
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 28
-        versionCode 2
-        versionName "1.0.1"
+        minSdkVersion globalConfiguration.minSdkVersion
+        targetSdkVersion globalConfiguration.targetSdkVersion
+        versionCode globalConfiguration.versionCode
+        versionName globalConfiguration.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'

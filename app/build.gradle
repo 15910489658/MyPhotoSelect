@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
-def and = rootProject.ext.android
 
 android {
+    def and = rootProject.extensions.getByName("ext").android
     compileSdkVersion and.compileSdkVersion
     buildToolsVersion and.buildToolsVersion
 
