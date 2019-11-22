@@ -16,7 +16,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.JulyJiangL:MyPhotoSelect:1.1.8'
+	        implementation 'com.github.JulyJiangL:MyPhotoSelect:1.2.2'
 		implementation 'androidx.appcompat:appcompat:1.1.0'
 	}
 	
