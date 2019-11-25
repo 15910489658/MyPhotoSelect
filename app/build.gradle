@@ -30,9 +30,11 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     def sdc = rootProject.ext.systemDepencies
     def lin = rootProject.ext.libFileImplementation
+    def adc = rootProject.ext.androidDependencies
     implementation sdc.appcompat
     testImplementation sdc.junit
     androidTestImplementation sdc.runner
     androidTestImplementation sdc.espresso
+    implementation adc.recyclerview
     implementation project(path: lin.myphotolib)
 }

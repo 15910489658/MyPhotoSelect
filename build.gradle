@@ -3,8 +3,6 @@ apply from : 'photoselect.gradle'
 
 buildscript {
 
-    apply from : 'photoselect.gradle'
-
     repositories {
         maven { url 'https://jitpack.io' }
         google()
