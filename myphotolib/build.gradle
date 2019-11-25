@@ -59,8 +59,8 @@ dependencies {
 publish {
     userOrg = 'julyjiangl'//bintray.com用户名
     groupId = 'com.JulyBase'//jcenter上的路径
-    artifactId = '1.0.0'//项目名称
-    publishVersion = '1.0.0'//版本号
+    artifactId = '1.2.6'//项目名称
+    publishVersion = '1.2.6'//版本号
     desc = 'once'//描述，不重要
     website = 'https://github.com/JulyJiangL/MyPhotoSelect'//网站，不重要；尽量模拟github上的地址，例如我这样的；当然你有地址最好了
 }
