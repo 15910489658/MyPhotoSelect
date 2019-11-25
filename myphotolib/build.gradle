@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'//依赖maven库用以生成依赖库
 group='com.github.JulyJiangL'
 
+apply plugin: 'com.novoda.bintray-release'//添加
+
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext").android
 
@@ -51,4 +53,14 @@ dependencies {
     implementation files(lin.unity)
     implementation files(lin.commons)
     implementation files(lin.universal)
+}
+
+//添加
+publish {
+    userOrg = 'julyjiangl'//bintray.com用户名
+    groupId = 'com.JulyBase'//jcenter上的路径
+    artifactId = '1.0.0'//项目名称
+    publishVersion = '1.0.0'//版本号
+    desc = 'once'//描述，不重要
+    website = 'https://github.com/JulyJiangL/MyPhotoSelect'//网站，不重要；尽量模拟github上的地址，例如我这样的；当然你有地址最好了
 }

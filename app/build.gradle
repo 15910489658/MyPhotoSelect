@@ -1,9 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    def and = rootProject.extensions.getByName("ext").android
-    compileSdkVersion and.compileSdkVersion
-    buildToolsVersion and.buildToolsVersion
+    compileSdkVersion rootProject.extensions.getByName("ext").android.compileSdkVersion
+    buildToolsVersion rootProject.extensions.getByName("ext").android.buildToolsVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -11,11 +10,11 @@ android {
     }
 
     defaultConfig {
-        applicationId and.applicationId
-        minSdkVersion and.minSdkVersion
-        targetSdkVersion and.targetSdkVersion
-        versionCode and.versionCode
-        versionName and.versionName
+        applicationId rootProject.ext.android.applicationId
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -28,13 +27,10 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    def sdc = rootProject.ext.systemDepencies
-    def lin = rootProject.ext.libFileImplementation
-    def adc = rootProject.ext.androidDependencies
-    implementation sdc.appcompat
-    testImplementation sdc.junit
-    androidTestImplementation sdc.runner
-    androidTestImplementation sdc.espresso
-    implementation adc.recyclerview
-    implementation project(path: lin.myphotolib)
+    implementation  rootProject.ext.systemDepencies.appcompat
+    testImplementation  rootProject.ext.systemDepencies.junit
+    androidTestImplementation  rootProject.ext.systemDepencies.runner
+    androidTestImplementation  rootProject.ext.systemDepencies.espresso
+    implementation rootProject.ext.androidDependencies.recyclerview
+    implementation project(path: rootProject.ext.libFileImplementation.myphotolib)
 }
