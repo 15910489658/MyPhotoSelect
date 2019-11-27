@@ -38,21 +38,21 @@ dependencies {
     testImplementation sdc.junit
     androidTestImplementation sdc.runner
     androidTestImplementation sdc.espresso
-    implementation adc.recyclerview
-    implementation adc.cardview
-    implementation adc.photoview
-    implementation adc.nineoldandroids
-    implementation adc.glide
-    implementation adc.gson
-    implementation odc.sephiroth
-    implementation odc.statusbarutil
-    implementation odc.autosize
+    api adc.recyclerview
+    api adc.cardview
+    api adc.photoview
+    api adc.nineoldandroids
+    api adc.glide
+    api adc.gson
+    api odc.sephiroth
+    api odc.statusbarutil
+    api odc.autosize
     //完整版引入
-    implementation odc.shuyu
+    api odc.shuyu
 
-    implementation files(lin.unity)
-    implementation files(lin.commons)
-    implementation files(lin.universal)
+    api files(lin.unity)
+    api files(lin.commons)
+    api files(lin.universal)
 }
 
 //添加
