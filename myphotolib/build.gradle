@@ -40,7 +40,7 @@ dependencies {
     androidTestImplementation sdc.espresso
     api adc.recyclerview
     api adc.cardview
-    implementation adc.photoview
+    api adc.photoview
     implementation adc.nineoldandroids
     api adc.glide
     implementation adc.gson
