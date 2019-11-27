@@ -38,11 +38,11 @@ dependencies {
     testImplementation sdc.junit
     androidTestImplementation sdc.runner
     androidTestImplementation sdc.espresso
-    api adc.recyclerview
-    api adc.cardview
-    api adc.photoview
+    implementation adc.recyclerview
+    implementation adc.cardview
+    implementation adc.photoview
     implementation adc.nineoldandroids
-    api adc.glide
+    implementation adc.glide
     implementation adc.gson
     implementation odc.sephiroth
     implementation odc.statusbarutil
