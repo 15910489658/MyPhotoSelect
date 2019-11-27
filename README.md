@@ -12,8 +12,16 @@ Add it in your root build.gradle at the end of repositories:
 			maven { url 'https://jitpack.io' }
 		}
 	}
+Step 2. Add the dependencies
 
-Step 2. Add the dependency
+	buildscript {
+		...
+		dependencies {
+			classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.0'
+		}
+	}
+	
+Step 3. Add the dependency
 
 	dependencies {
 	        implementation 'com.github.JulyJiangL:MyPhotoSelect:1.3.1'
