@@ -514,7 +514,7 @@ public class CropImageView extends AppCompatImageView {
             bitmap = Bitmap.createBitmap(bitmap, left, top, width, height);
             if (expectWidth != width || exceptHeight != height) {
                 bitmap = Bitmap.createScaledBitmap(bitmap, expectWidth, exceptHeight, true);
-                if (mStyle == Style.CIRCLE && !isSaveRectangle) {
+                if (mStyle == CropImageView.Style.CIRCLE && !isSaveRectangle) {
                     //如果是圆形，就将图片裁剪成圆的
                     int length = Math.min(expectWidth, exceptHeight);
                     int radius = length / 2;
@@ -545,7 +545,7 @@ public class CropImageView extends AppCompatImageView {
         final Bitmap croppedImage = getCropBitmap(expectWidth, exceptHeight, isSaveRectangle);
         Bitmap.CompressFormat outputFormat = Bitmap.CompressFormat.JPEG;
         File saveFile = createFile(folder, "IMG_", ".jpg");
-        if (mStyle == Style.CIRCLE && !isSaveRectangle) {
+        if (mStyle == CropImageView.Style.CIRCLE && !isSaveRectangle) {
             outputFormat = Bitmap.CompressFormat.PNG;
             saveFile = createFile(folder, "IMG_", ".png");
         }

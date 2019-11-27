@@ -1,4 +1,4 @@
-package com.photo.selectlib.utils;//package com.photo.selectlib.utils;
+//package com.photo.selectlib.utils;
 //
 //import android.content.Context;
 //import android.net.Uri;

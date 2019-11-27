@@ -13,6 +13,7 @@ ext{
     glideLibraryVersion = "3.7.0"
     junitLibraryVersion = "4.12"
     shuyuLibraryVersion = "7.1.1"
+    butterKnifeLibraryVersion = "10.2.0"
 
     android = [
             compileSdkVersion:29,
@@ -30,7 +31,9 @@ ext{
             photoview               : "com.github.chrisbanes:PhotoView:${PhotoViewLibraryVersion}",
             nineoldandroids         : "com.nineoldandroids:library:${nineoldandroidsLibraryVersion}",
             glide                   : "com.github.bumptech.glide:glide:${glideLibraryVersion}",
-            gson                    : "com.google.code.gson:gson:${gsonLibraryVersion}"
+            gson                    : "com.google.code.gson:gson:${gsonLibraryVersion}",
+            butterKnife             : "com.jakewharton:butterknife:${butterKnifeLibraryVersion}",
+            butterKnifeCompiler     : "com.jakewharton:butterknife:${butterKnifeLibraryVersion}"
     ]
 
     otherDependencies = [

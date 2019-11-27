@@ -2,7 +2,6 @@ package com.photo.selectlib.utils;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.view.Gravity;
 import android.view.View;
@@ -41,7 +40,7 @@ public class ShowBottomDialog {
             @Override
             public void onClick(View view) {
                 //保存到相册
-                ImageUtils.saveBitmap(context,BitmapFactory.decodeFile(path),pathName);
+                ImageUtil.saveBitmap(context,BitmapFactory.decodeFile(path),pathName);
                 dialog.dismiss();
                 ToastUtils.getInstance().showShort(context,"保存成功",false);
             }

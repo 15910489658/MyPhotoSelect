@@ -2,12 +2,10 @@ package com.photo.selectlib;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -15,18 +13,17 @@ import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.photo.selectlib.activity.GSYVideoActivity;
-import com.photo.selectlib.activity.PreviewImageActivity;
 import com.photo.selectlib.activity.PreviewImageUnityActivity;
 import com.photo.selectlib.bean.ImageFolderBean;
 import com.photo.selectlib.bean.UnityPreviewBean;
 import com.photo.selectlib.core.ImageSelectObservable;
 import com.photo.selectlib.matisse.Matisse;
-import com.photo.selectlib.utils.ClipboardUtils;
+import com.photo.selectlib.utils.ClipboardUtil;
 import com.photo.selectlib.utils.DeviceIdUtil;
-import com.photo.selectlib.utils.ImageUtils;
-import com.photo.selectlib.utils.LocationUtils;
+import com.photo.selectlib.utils.ImageUtil;
+import com.photo.selectlib.utils.LocationUtil;
 import com.photo.selectlib.utils.LogUtil;
-import com.photo.selectlib.utils.SaveBitmapToBytesUtil;
+import com.photo.selectlib.utils.PermissionsUtil;
 import com.photo.selectlib.utils.StorageUtil;
 import com.photo.selectlib.utils.ToastUtils;
 import com.photo.selectlib.utils.TranslationUtil;
@@ -78,7 +75,7 @@ public class BaseActivity extends Activity {
      * @return
      */
     public String GetClipboardContent(){
-        return ClipboardUtils.getInstance().getClipContent(mActivity);
+        return ClipboardUtil.getInstance().getClipContent(mActivity);
     }
 
     /**
@@ -87,12 +84,14 @@ public class BaseActivity extends Activity {
      * @return 是否执行完毕
      */
     public boolean CopyContent(String content){
-        return ClipboardUtils.getInstance().copy(mActivity,content);
+        return ClipboardUtil.getInstance().copy(mActivity,content);
     }
 
-    //定位权限
+    /**
+     * 定位权限
+     */
     public void OpenGPSPermission(){
-        LocationUtils.getGPSPermission(mActivity);
+        LocationUtil.getGPSPermission(mActivity);
     }
 
     /**
@@ -106,7 +105,7 @@ public class BaseActivity extends Activity {
          * 参数二：图片Bitmap
          * 参数三：存储图片名称
          */
-        return ImageUtils.saveBitmap(mActivity,BitmapFactory.decodeFile(path.trim()),TranslationUtil.getInstance().getFileName(path.trim()));
+        return ImageUtil.saveBitmap(mActivity,BitmapFactory.decodeFile(path.trim()),TranslationUtil.getInstance().getFileName(path.trim()));
     }
 
     /**
@@ -116,6 +115,13 @@ public class BaseActivity extends Activity {
     public String GetDeviceId(){
 
         return DeviceIdUtil.getUniquePsuedoID();
+    }
+
+    /**
+     * 获取录音权限
+     */
+    public void GetMicrophonePermission(){
+        PermissionsUtil.getInstance().getMicrophone();
     }
 
     /**
@@ -143,7 +149,8 @@ public class BaseActivity extends Activity {
                     LogUtil.e("UnityFilePath",mActivity.getExternalFilesDir("").getAbsolutePath());
 
                     LogUtil.e("UnityFileCompletePath",mActivity.getExternalFilesDir("").getAbsolutePath()+"/"+previewbean.get(i).getImagePath());
-                    list.add(new ImageFolderBean(previewbean.get(i).getImageUrl(),mActivity.getExternalFilesDir("").getAbsolutePath()+"/"+previewbean.get(i).getImagePath()));
+                    list.add(new ImageFolderBean(previewbean.get(i).getImageUrl(),previewbean.get(i).getImageUrl().equals(previewbean.get(i).getImagePath())?previewbean.get(i).getImagePath()
+                            :mActivity.getExternalFilesDir("").getAbsolutePath()+"/"+previewbean.get(i).getImagePath()));
                 }
             }
             ImageSelectObservable.getInstance().addSelectImagesAndClearBefore(list);

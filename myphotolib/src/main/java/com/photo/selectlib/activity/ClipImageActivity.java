@@ -1,80 +1,81 @@
 package com.photo.selectlib.activity;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.jaeger.library.StatusBarUtil;
 import com.photo.selectlib.R;
+import com.photo.selectlib.R2;
 import com.photo.selectlib.view.ClipViewLayout;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * 图片剪切
  */
-public class ClipImageActivity extends Activity implements View.OnClickListener {
+public class ClipImageActivity extends BaseExtendActivity{
 
-    private ClipViewLayout clipViewLayout1;
-    private ClipViewLayout clipViewLayout2;
-    private ImageView back;
-    private TextView tv_ok;
+    @BindView(R2.id.clipViewLayout1)
+    ClipViewLayout clipViewLayout1;
+    @BindView(R2.id.clipViewLayout2)
+    ClipViewLayout clipViewLayout2;
     //类别 1：圆形  2：方形
     private int type;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_clip_image);
-        /*全屏*/
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//        }
-        StatusBarUtil.setColor(ClipImageActivity.this, getResources().getColor(R.color.album_finish));
-        type = getIntent().getIntExtra("type",1);
-        initView();
+    protected void initWindows() {
+
     }
 
-    private void initView() {
-        clipViewLayout1 = (ClipViewLayout)findViewById(R.id.clipViewLayout1);
-        clipViewLayout2 = (ClipViewLayout)findViewById(R.id.clipViewLayout2);
-        back = (ImageView)findViewById(R.id.iv_back);
-        tv_ok = (TextView)findViewById(R.id.tv_ok);
-        back.setOnClickListener(this);
-        tv_ok.setOnClickListener(this);
+    @Override
+    protected int getContentLayoutId() {
+        return R.layout.activity_clip_image;
+    }
+
+    @Override
+    protected void initTool() {
+        StatusBarUtil.setColor(ClipImageActivity.this, getResources().getColor(R.color.album_finish));
+    }
+
+    @Override
+    protected void initData() {
+        type = getIntent().getIntExtra("type", 1);
+    }
+
+    @Override
+    protected boolean initButterKnife() {
+        return true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(type == 1){
+        if (type == 1) {
             clipViewLayout1.setVisibility(View.VISIBLE);
             clipViewLayout2.setVisibility(View.GONE);
             //设置图片资源
             clipViewLayout1.setImageSrc(getIntent().getData());
-        }else {
+        } else {
             clipViewLayout2.setVisibility(View.VISIBLE);
             clipViewLayout1.setVisibility(View.GONE);
             clipViewLayout2.setImageSrc(getIntent().getData());
         }
     }
-
-    @Override
-    public void onClick(View view) {
+    @OnClick({R2.id.iv_back, R2.id.tv_ok})
+    public void onViewClicked(View view) {
         int id = view.getId();
         if (id == R.id.iv_back) {
             finish();
@@ -122,5 +123,12 @@ public class ClipImageActivity extends Activity implements View.OnClickListener 
             setResult(RESULT_OK, intent);
             finish();
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

@@ -2,7 +2,6 @@ package com.photo.selectlib.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -13,25 +12,31 @@ import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.jaeger.library.StatusBarUtil;
 import com.photo.selectlib.R;
+import com.photo.selectlib.R2;
 import com.photo.selectlib.adapter.ImageGridApter;
 import com.photo.selectlib.bean.ImageFolderBean;
 import com.photo.selectlib.core.ImageSelectObservable;
 import com.photo.selectlib.listener.OnRecyclerViewClickListener;
-import com.photo.selectlib.utils.ImageUtils;
+import com.photo.selectlib.utils.ImageUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Collection;
 import java.util.Observable;
 import java.util.Observer;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 
 /**
@@ -59,10 +64,23 @@ import java.util.Observer;
  *
  * 系统相册选择
  */
-public class ImageSelectActivity extends Activity implements Callback, OnClickListener, OnRecyclerViewClickListener, Observer {
+public class ImageSelectActivity extends BaseExtendActivity implements Callback, OnRecyclerViewClickListener, Observer {
 
-    private TextView tv_select_finish;
-    private CheckBox rb_original_image;
+    @BindView(R2.id.iv_select_back)
+    ImageView iv_select_back;
+    @BindView(R2.id.tv_select_finish)
+    TextView tv_select_finish;
+    @BindView(R2.id.rb_original_image)
+    CheckBox rb_original_image;
+    @BindView(R2.id.ll_photo_operation)
+    RelativeLayout ll_photo_operation;
+    @BindView(R2.id.lv_photo_folder)
+    RecyclerView recyclerView;
+    @BindView(R2.id.tv_photo_ok)
+    TextView mOkTv;
+    @BindView(R2.id.tv_photo_scan)
+    TextView tv_photo_scan;
+
 
     public static void startPhotoSelectGridActivity(Activity activity, String folder, boolean singleSelect, int maxCount, int requestCode) {
         Intent intent = new Intent(activity, ImageSelectActivity.class);
@@ -86,34 +104,57 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
 
     private Handler mHandler;
 
-    /**
-     * 确定
-     */
-    private TextView mOkTv;
-
     private boolean mIsSelectSingleImge;
 
     @Override
-    protected void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
-        setContentView(R.layout.photo_gridview_main);
+    protected void initWindows() {
+
+    }
+
+    @Override
+    protected int getContentLayoutId() {
+        return R.layout.photo_gridview_main;
+    }
+
+    @Override
+    protected void initTool() {
         StatusBarUtil.setColor(ImageSelectActivity.this, getResources().getColor(R.color.album_finish));
-        //适配虚拟返回键盘
-//        if (AndroidWorkaround.checkDeviceHasNavigationBar(this)) {
-//            AndroidWorkaround.assistActivity(findViewById(android.R.id.content));
-//        }
-        /*全屏*/
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//        }
+    }
+
+    @Override
+    protected void initData() {
+        rb_original_image.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                rb_original_image.setChecked(isChecked);
+            }
+        });
+
+        ll_photo_operation.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        /*这里直接设置表格布局，三列*/
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setHasFixedSize(true);
+
+        mAdapter = new ImageGridApter(this, ImageSelectObservable.getInstance().getFolderAllImages(), mIsSelectSingleImge, getIntent().getIntExtra("maxCount", 1));
+        mAdapter.setOnClickListener(this);
+        recyclerView.setAdapter(mAdapter);
+
+        mOkTv.setText(String.format(getResources().getString(R.string.photo_ok), mAdapter.getSelectlist().size()));
+        tv_select_finish.setText(String.format(getResources().getString(R.string.photo_ok_finish), mAdapter.getSelectlist().size())+ "/"+getIntent().getIntExtra("maxCount", 1)+")");
+
         ImageSelectObservable.getInstance().addObserver(this);
         mHandler = new Handler(this);
         mIsSelectSingleImge = getIntent().getBooleanExtra("single", false);
-        initView();
-        initData();
+        ImageUtil.queryGalleryPicture(this, getIntent().getStringExtra("data"), mHandler, MSG_PHOTO);
         if (mIsSelectSingleImge) {
-            findViewById(R.id.ll_photo_operation).setVisibility(View.GONE);
+            ll_photo_operation.setVisibility(View.GONE);
         }
     }
 
@@ -124,59 +165,12 @@ public class ImageSelectActivity extends Activity implements Callback, OnClickLi
         super.onDestroy();
     }
 
-    /**
-     * <li>初始化数据</li>
-     */
-    private void initData() {
-        ImageUtils.queryGalleryPicture(this, getIntent().getStringExtra("data"), mHandler, MSG_PHOTO);
-
-    }
-
-    /**
-     * <li>初始化view</li>
-     */
-    private void initView() {
-//        TitleView titleView = (TitleView) findViewById(R.id.tv_photo_title);
-//        titleView.getLeftBackImageTv().setOnClickListener(this);
-
-        ImageView iv_select_back = findViewById(R.id.iv_select_back);
-        tv_select_finish = findViewById(R.id.tv_select_finish);
-        rb_original_image = findViewById(R.id.rb_original_image);
-        iv_select_back.setOnClickListener(this);
-        tv_select_finish.setOnClickListener(this);
-        rb_original_image.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                rb_original_image.setChecked(isChecked);
-            }
-        });
-
-        findViewById(R.id.ll_photo_operation).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-
-        /*这里直接设置表格布局，三列*/
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.lv_photo_folder);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setHasFixedSize(true);
-
-        mAdapter = new ImageGridApter(this, ImageSelectObservable.getInstance().getFolderAllImages(), mIsSelectSingleImge, getIntent().getIntExtra("maxCount", 1));
-        mAdapter.setOnClickListener(this);
-        recyclerView.setAdapter(mAdapter);
-
-        mOkTv = (TextView) findViewById(R.id.tv_photo_ok);
-        mOkTv.setText(String.format(getResources().getString(R.string.photo_ok), mAdapter.getSelectlist().size()));
-        tv_select_finish.setText(String.format(getResources().getString(R.string.photo_ok_finish), mAdapter.getSelectlist().size())+ "/"+getIntent().getIntExtra("maxCount", 1)+")");
-        findViewById(R.id.tv_photo_scan).setOnClickListener(this);
-        mOkTv.setOnClickListener(this);
-
-    }
-
     @Override
+    protected boolean initButterKnife() {
+        return true;
+    }
+
+    @OnClick({R2.id.tv_photo_scan, R2.id.tv_photo_ok, R2.id.iv_left_image, R2.id.tv_select_finish, R2.id.iv_select_back})
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.tv_photo_scan) {

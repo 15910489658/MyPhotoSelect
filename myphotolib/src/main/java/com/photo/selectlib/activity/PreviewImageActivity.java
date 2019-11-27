@@ -2,14 +2,11 @@ package com.photo.selectlib.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -25,22 +22,23 @@ import androidx.viewpager.widget.ViewPager;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.jaeger.library.StatusBarUtil;
 import com.photo.selectlib.R;
+import com.photo.selectlib.R2;
 import com.photo.selectlib.adapter.ImagePreviewAdapter;
 import com.photo.selectlib.bean.ImageFolderBean;
 import com.photo.selectlib.core.ImageSelectObservable;
 import com.photo.selectlib.listener.OnRecyclerViewClickListener;
 import com.photo.selectlib.listener.RecyclerViewSmoothMoveToPositionUtil;
 import com.photo.selectlib.listener.SpacesItemDecoration;
-import com.photo.selectlib.utils.AndroidWorkaround;
-import com.photo.selectlib.utils.ImageUtils;
 import com.photo.selectlib.utils.LogUtil;
 import com.photo.selectlib.utils.ShowBottomDialog;
-import com.photo.selectlib.utils.TitleView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 
 /**
@@ -68,33 +66,37 @@ import java.util.List;
  *
  * 预览图片
  */
-public class PreviewImageActivity extends Activity implements OnClickListener {
+public class PreviewImageActivity extends BaseExtendActivity implements OnClickListener {
 	/** 显示/隐藏 过程持续时间 */
 	private static final int SHOW_HIDE_CONTROL_ANIMATION_TIME = 500;
-	private ViewPager mPhotoPager;
+	@BindView(R2.id.vp_preview)
+	ViewPager mPhotoPager;
+	/**标题栏*/
+	@BindView(R2.id.rl_large_title)
+	RelativeLayout mTitleView;
+	@BindView(R2.id.rl_check)/*底部菜单栏*/
+	View mFooterView;
+	@BindView(R2.id.tv_preview_select_finish)
+	TextView tv_select_finish;
+	@BindView(R2.id.rv_preview_photo)
+	RecyclerView rv_preview_photo;
+	@BindView(R2.id.ctv_check)
+	TextView ctv_check;
+	@BindView(R2.id.cb_checkbox)
+	CheckBox cb_checkbox;
+
 	private static boolean isSelect = false;
 	private static boolean isUnity = false;
 	private int mPosition;
-
-	/**标题栏*/
-	private RelativeLayout mTitleView;
 	/**控制显示、隐藏顶部标题栏*/
 	private boolean isHeadViewShow = true;
-	private static View mFooterView;
-
 	/**需要预览的所有图片*/
 	private List<ImageFolderBean> mAllImage;
 	/**x选择的所有图片*/
 	private List<ImageFolderBean> mSelectImage;
 	private ShowBottomDialog showBottomDialog;
-	private TextView tv_select_finish;
 	private int mMaxNum;
-	private ImageView iv_preview_select_back;
-	private RecyclerView rv_preview_photo;
 	private ImagePreviewAdapter adapter;
-	private TextView ctv_check;
-	private TextView tv_check;
-	private CheckBox cb_checkbox;
 
 	/**
 	 * 预览文件夹下所有图片
@@ -128,21 +130,32 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 		activity.startActivityForResult(intent, requestCode);
 		activity.overridePendingTransition(R.anim.common_scale_small_to_large, 0);
 	}
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.preview_image_activity);
-		StatusBarUtil.setColor(PreviewImageActivity.this, getResources().getColor(R.color.album_finish));
-		initImages();
-        initView();
-        initAdapter();
 
-		/*全屏*/
-//		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//		}
+	@Override
+	protected void initWindows() {
+
+	}
+
+	@Override
+	protected int getContentLayoutId() {
+		return R.layout.preview_image_activity;
+	}
+
+	@Override
+	protected void initTool() {
+		StatusBarUtil.setColor(PreviewImageActivity.this, getResources().getColor(R.color.album_finish));
+	}
+
+	@Override
+	protected void initData() {
+		initImages();
+		initView();
+		initAdapter();
+	}
+
+	@Override
+	protected boolean initButterKnife() {
+		return true;
 	}
 
 	/**
@@ -166,44 +179,22 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 	/**初始化控件*/
 	private void initView() {
 		/*标题栏*/
-		mTitleView = (RelativeLayout) findViewById(R.id.rl_large_title);
-		tv_select_finish = findViewById(R.id.tv_preview_select_finish);
-		iv_preview_select_back = findViewById(R.id.iv_preview_select_back);
-		rv_preview_photo = findViewById(R.id.rv_preview_photo);
-		cb_checkbox = findViewById(R.id.cb_checkbox);
-		ctv_check = findViewById(R.id.ctv_check);
-		tv_check = findViewById(R.id.tv_check);
-//		mTitleView.getLeftBackImageTv().setOnClickListener(this);
-		String title = getIntent().getIntExtra("position", 1) + "/" + mAllImage.size();
-//		mTitleView.getTitleTv().setText(title);
-//		mTitleView.getRightTextTv().setOnClickListener(this);
-//		mTitleView.getLeftBackImageTv().setOnClickLi stener(this);
 		tv_select_finish.setVisibility(View.VISIBLE);
+		rv_preview_photo.setVisibility(View.VISIBLE);
 		showBottomDialog = new ShowBottomDialog();
 		tv_select_finish.setText(String.format(getResources().getString(R.string.photo_ok_finish), mSelectImage.size())+ "/"+getIntent().getIntExtra("mMaxNum", 1)+")");
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 		linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 		rv_preview_photo.addItemDecoration(new SpacesItemDecoration(4));
 		rv_preview_photo.setLayoutManager(linearLayoutManager);
-		/*底部菜单栏*/
-		mFooterView = findViewById(R.id.rl_check);
 		mMaxNum = getIntent().getIntExtra("mMaxNum", 1);
 		if(isSelect){
 			mFooterView.setVisibility(View.GONE);
 		}else{
 			mFooterView.setVisibility(View.VISIBLE);
 		}
-//		mCheckedTv.setEnabled(mAllImage.get(getIntent().getIntExtra("position", 0)).selectPosition > 0);
 		ctv_check.setEnabled(mSelectImage.contains(mAllImage.get(getIntent().getIntExtra("position", 0))));
-		cb_checkbox.setEnabled(mSelectImage.contains(mAllImage.get(getIntent().getIntExtra("position", 0))));
-		mFooterView.setOnClickListener(this);
-		iv_preview_select_back.setOnClickListener(this);
-		tv_select_finish.setOnClickListener(this);
-		ctv_check.setOnClickListener(this);
-		cb_checkbox.setOnClickListener(this);
-		tv_check.setOnClickListener(this);
-
-		mPhotoPager = (ViewPager) findViewById(R.id.vp_preview);
+		cb_checkbox.setChecked(mSelectImage.contains(mAllImage.get(getIntent().getIntExtra("position", 0))));
 		RecyclerViewSmoothMoveToPositionUtil.getInstance().smoothMoveToPosition(rv_preview_photo,mPosition);
 
 	}
@@ -222,7 +213,6 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 	 * adapter的初始化
 	 */
 	private void initAdapter() {
-		mPhotoPager = (ViewPager) findViewById(R.id.vp_preview);
 		PreviewAdapter  previewAdapter = new PreviewAdapter(mAllImage);
 		mPhotoPager.setAdapter(previewAdapter);
 		mPhotoPager.setPageMargin(5);
@@ -255,7 +245,7 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 //				mTitleView.getTitleTv().setText(text);
 				tv_select_finish.setText(getResources().getString(R.string.photo_ok_finish, mSelectImage.size())+ "/"+mMaxNum+")");
 				ctv_check.setEnabled(mSelectImage.contains(mAllImage.get(arg0)));
-				cb_checkbox.setEnabled(mSelectImage.contains(mAllImage.get(arg0)));
+				cb_checkbox.setChecked(mSelectImage.contains(mAllImage.get(arg0)));
 				mAllImage.get(mPosition).setSelect(false);
 				mAllImage.get(arg0).setSelect(true);
 				mPosition = arg0;
@@ -310,7 +300,7 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 		public Object instantiateItem(ViewGroup container, final int position) {
 			LayoutInflater inflater = LayoutInflater.from(PreviewImageActivity.this);
 			View view = inflater.inflate(R.layout.preview_image_item, container, false);
-			PhotoView bigPhotoIv = (PhotoView) view.findViewById(R.id.iv_image_item);
+			PhotoView bigPhotoIv = view.findViewById(R.id.iv_image_item);
 			bigPhotoIv.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -343,7 +333,8 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 	}
 
 
-	@Override
+	@OnClick({R2.id.tv_right_text,R2.id.iv_preview_select_back,R2.id.tv_preview_select_finish,R2.id.tv_check
+			,R2.id.ctv_check,R2.id.cb_checkbox,R2.id.iv_left_image,})
 	public void onClick(View v) {
 		int id = v.getId();
 		if (id == R.id.tv_right_text || id == R.id.iv_preview_select_back || id == R.id.tv_preview_select_finish) {
@@ -369,7 +360,7 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 			mSelectImage.remove(imageBean);
 			subSelectPosition();
 			ctv_check.setEnabled(false);
-			cb_checkbox.setEnabled(false);
+			cb_checkbox.setChecked(false);
 		} else {
 			if(mSelectImage.size() >= mMaxNum){
 				Toast.makeText(this, this.getResources().getString(R.string.publish_select_photo), Toast.LENGTH_SHORT).show();
@@ -377,7 +368,7 @@ public class PreviewImageActivity extends Activity implements OnClickListener {
 				mSelectImage.add(imageBean);
 				imageBean.selectPosition = mSelectImage.size();
 				ctv_check.setEnabled(true);
-				cb_checkbox.setEnabled(true);
+				cb_checkbox.setChecked(true);
 			}
 		}
 		tv_select_finish.setText(getResources().getString(R.string.photo_ok_finish, mSelectImage.size())+ "/"+mMaxNum+")");

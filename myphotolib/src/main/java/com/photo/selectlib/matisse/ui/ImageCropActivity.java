@@ -13,10 +13,10 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.photo.selectlib.R;
+import com.photo.selectlib.internal.utils.BitmapUtil;
 import com.photo.selectlib.matisse.internal.entity.SelectionSpec;
 import com.photo.selectlib.matisse.internal.ui.BasePreviewActivity;
 import com.photo.selectlib.matisse.internal.ui.widget.CropImageView;
-import com.photo.selectlib.matisse.internal.utils.BitmapUtil;
 import com.photo.selectlib.matisse.internal.utils.Platform;
 import com.photo.selectlib.matisse.internal.utils.SizeUtils;
 import com.photo.selectlib.matisse.internal.utils.UIUtils;

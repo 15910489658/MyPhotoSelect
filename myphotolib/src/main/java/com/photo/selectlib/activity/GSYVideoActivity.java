@@ -1,45 +1,49 @@
 package com.photo.selectlib.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.pm.ActivityInfo;
 import android.os.Build;
-import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.photo.selectlib.R;
+import com.photo.selectlib.R2;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
+import butterknife.BindView;
 
-public class GSYVideoActivity extends AppCompatActivity {
+public class GSYVideoActivity extends BaseExtendActivity {
 
-    private StandardGSYVideoPlayer jzvdStd;
+    @BindView(R2.id.jz_video)
+    StandardGSYVideoPlayer jzvdStd;
     private OrientationUtils orientationUtils;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_gsyvideo);
-        /*全屏*/
+    protected void initWindows() {
+
+    }
+
+    @Override
+    protected int getContentLayoutId() {
+        return R.layout.activity_my_gsyvideo;
+    }
+
+    @Override
+    protected void initTool() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
-
-        initview();
-        initdata();
     }
 
-    //加载视频地址
-    private void initdata() {
+    @Override
+    protected void initData() {
         String video_url = getIntent().getStringExtra("video_url");
         //播放器
         jzvdStd.setUp(video_url
-                ,true
-                ,"");
+                , true
+                , "");
 
         //设置返回键
         jzvdStd.getBackButton().setVisibility(View.VISIBLE);
@@ -65,9 +69,9 @@ public class GSYVideoActivity extends AppCompatActivity {
         jzvdStd.startPlayLogic();
     }
 
-    //初始化控件
-    private void initview() {
-        jzvdStd = findViewById(R.id.jz_video);
+    @Override
+    protected boolean initButterKnife() {
+        return true;
     }
 
     @Override

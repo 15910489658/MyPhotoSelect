@@ -2,9 +2,11 @@ package com.photo.selectlib.utils;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -12,14 +14,10 @@ import androidx.core.content.ContextCompat;
 
 import com.photo.selectlib.BaseActivity;
 import com.photo.selectlib.activity.FolderListActivity;
-import com.photo.selectlib.matisse.Matisse;
-import com.photo.selectlib.matisse.MimeType;
-import com.photo.selectlib.matisse.engine.impl.GlideEngine;
-import com.photo.selectlib.matisse.internal.entity.CaptureStrategy;
-import com.photo.selectlib.matisse.internal.ui.widget.CropImageView;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static com.photo.selectlib.utils.LocationUtils.BAIDU_READ_PHONE_STATE;
+import static com.photo.selectlib.utils.LocationUtil.BAIDU_READ_PHONE_STATE;
+import static com.photo.selectlib.utils.PermissionsUtil.MICROPHONE;
 
 /**
  * 读取相册信息工具类
@@ -135,6 +133,20 @@ public class StorageUtil {
                     doCode(BaseActivity.mActivity,mCode,mMaxNumber);
                 }else{
 //                    Toast.makeText(BaseActivity.mActivity,"权限申请失败",Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case MICROPHONE:
+                for (int i = 0; i < grantResults.length; i++) {
+                    if(grantResults[i] == PackageManager.PERMISSION_DENIED){
+                        if (!ActivityCompat.shouldShowRequestPermissionRationale(BaseActivity.mActivity, permissions[i])) {
+                            ToastUtils.getInstance().showShort(BaseActivity.mActivity,"请授权麦克风权限",false);
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", BaseActivity.mActivity.getPackageName(), null);
+                            intent.setData(uri);
+                            BaseActivity.mActivity.startActivity(intent);
+                        }
+                    }
                 }
                 break;
             default:

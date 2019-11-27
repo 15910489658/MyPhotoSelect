@@ -25,6 +25,7 @@ import com.jaeger.library.StatusBarUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
 import com.photo.selectlib.R;
+import com.photo.selectlib.R2;
 import com.photo.selectlib.adapter.ImagePreviewUnityAdapter;
 import com.photo.selectlib.adapter.ImagePreviewUnityAdapter;
 import com.photo.selectlib.bean.ImageFolderBean;
@@ -38,6 +39,9 @@ import com.photo.selectlib.utils.ShowBottomDialog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 
 /**
@@ -65,34 +69,42 @@ import java.util.List;
  *
  * 预览图片
  */
-public class PreviewImageUnityActivity extends Activity implements OnClickListener {
+public class PreviewImageUnityActivity extends BaseExtendActivity implements OnClickListener {
 	/** 显示/隐藏 过程持续时间 */
 	private static final int SHOW_HIDE_CONTROL_ANIMATION_TIME = 500;
-	private ViewPager mPhotoPager;
+	@BindView(R2.id.vp_preview)
+	ViewPager mPhotoPager;
+	/**标题栏*/
+	@BindView(R2.id.rl_large_title)
+	RelativeLayout mTitleView;
+	/**选择按钮*/
+	@BindView(R2.id.ctv_check)
+	TextView mCheckedTv;
+	@BindView(R2.id.rl_check)
+	View mFooterView;
+	@BindView(R2.id.tv_preview_select_finish)
+	TextView tv_select_finish;
+	@BindView(R2.id.iv_preview_select_back)
+	ImageView iv_preview_select_back;
+	@BindView(R2.id.rv_preview_photo)
+	RecyclerView rv_preview_photo;
+	@BindView(R2.id.tv_check)
+	TextView tv_check;
+
 	private static boolean isSelect = false;
 	private static boolean isUnity = false;
 	private int mPosition;
 
-	/**标题栏*/
-	private RelativeLayout mTitleView;
-	/**选择按钮*/
-	private TextView mCheckedTv;
 	/**控制显示、隐藏顶部标题栏*/
 	private boolean isHeadViewShow = true;
-	private static View mFooterView;
 
 	/**需要预览的所有图片*/
 	private List<ImageFolderBean> mAllImage;
 	/**x选择的所有图片*/
 	private List<ImageFolderBean> mSelectImage;
 	private ShowBottomDialog showBottomDialog;
-	private TextView tv_select_finish;
 	private int mMaxNum;
-	private ImageView iv_preview_select_back;
-	private RecyclerView rv_preview_photo;
 	private ImagePreviewUnityAdapter adapter;
-	private TextView ctv_check;
-	private TextView tv_check;
 
 	/**
 	 * 预览文件夹下所有图片
@@ -129,19 +141,30 @@ public class PreviewImageUnityActivity extends Activity implements OnClickListen
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.preview_image_activity);
+	protected void initWindows() {
+
+	}
+
+	@Override
+	protected int getContentLayoutId() {
+		return R.layout.preview_image_activity;
+	}
+
+	@Override
+	protected void initTool() {
 		StatusBarUtil.setColor(PreviewImageUnityActivity.this, getResources().getColor(R.color.album_finish));
+	}
+
+	@Override
+	protected void initData() {
 		initImages();
 		initView();
 		initAdapter();
+	}
 
-		/*全屏*/
-//		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//		}
+	@Override
+	protected boolean initButterKnife() {
+		return true;
 	}
 
 	/**
@@ -167,19 +190,8 @@ public class PreviewImageUnityActivity extends Activity implements OnClickListen
 	/**初始化控件*/
 	private void initView() {
 		/*标题栏*/
-		mTitleView = (RelativeLayout) findViewById(R.id.rl_large_title);
-		tv_select_finish = findViewById(R.id.tv_preview_select_finish);
 		tv_select_finish.setVisibility(View.GONE);
-		iv_preview_select_back = findViewById(R.id.iv_preview_select_back);
-		TextView tv_preview_select_finish = findViewById(R.id.tv_preview_select_finish);
-		rv_preview_photo = findViewById(R.id.rv_preview_photo);
-		ctv_check = findViewById(R.id.ctv_check);
-		tv_check = findViewById(R.id.tv_check);
-//		mTitleView.getLeftBackImageTv().setOnClickListener(this);
 		String title = getIntent().getIntExtra("position", 1) + "/" + mAllImage.size();
-//		mTitleView.getTitleTv().setText(title);
-//		mTitleView.getRightTextTv().setOnClickListener(this);
-//		mTitleView.getLeftBackImageTv().setOnClickLi stener(this);
 		showBottomDialog = new ShowBottomDialog();
 		tv_select_finish.setText(String.format(getResources().getString(R.string.photo_ok_finish), mSelectImage.size())+ "/"+getIntent().getIntExtra("mMaxNum", 1)+")");
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -187,19 +199,10 @@ public class PreviewImageUnityActivity extends Activity implements OnClickListen
 		rv_preview_photo.addItemDecoration(new SpacesItemDecoration(4));
 		rv_preview_photo.setLayoutManager(linearLayoutManager);
 		/*底部菜单栏*/
-		mFooterView = findViewById(R.id.rl_check);
 		mFooterView.setVisibility(View.GONE);
 		mMaxNum = getIntent().getIntExtra("mMaxNum", 1);
-		mCheckedTv = (TextView) findViewById(R.id.ctv_check);
-//		mCheckedTv.setEnabled(mAllImage.get(getIntent().getIntExtra("position", 0)).selectPosition > 0);
 		mCheckedTv.setEnabled(mSelectImage.contains(mAllImage.get(getIntent().getIntExtra("position", 0))));
-		mFooterView.setOnClickListener(this);
-		iv_preview_select_back.setOnClickListener(this);
-		tv_preview_select_finish.setOnClickListener(this);
-		ctv_check.setOnClickListener(this);
-		tv_check.setOnClickListener(this);
 
-		mPhotoPager = (ViewPager) findViewById(R.id.vp_preview);
 		RecyclerViewSmoothMoveToPositionUtil.getInstance().smoothMoveToPosition(rv_preview_photo,mPosition);
 
 	}
@@ -218,7 +221,6 @@ public class PreviewImageUnityActivity extends Activity implements OnClickListen
 	 * adapter的初始化
 	 */
 	private void initAdapter() {
-		mPhotoPager = (ViewPager) findViewById(R.id.vp_preview);
 		PreviewAdapter  previewAdapter = new PreviewAdapter(mAllImage);
 		mPhotoPager.setAdapter(previewAdapter);
 		mPhotoPager.setPageMargin(5);
@@ -305,7 +307,7 @@ public class PreviewImageUnityActivity extends Activity implements OnClickListen
 		public Object instantiateItem(ViewGroup container, final int position) {
 			LayoutInflater inflater = LayoutInflater.from(PreviewImageUnityActivity.this);
 			View view = inflater.inflate(R.layout.preview_image_item, container, false);
-			PhotoView bigPhotoIv = (PhotoView) view.findViewById(R.id.iv_image_item);
+			PhotoView bigPhotoIv = view.findViewById(R.id.iv_image_item);
 			bigPhotoIv.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -352,7 +354,8 @@ public class PreviewImageUnityActivity extends Activity implements OnClickListen
 	}
 
 
-	@Override
+	@OnClick({R2.id.tv_right_text,R2.id.iv_preview_select_back,R2.id.tv_preview_select_finish,
+			R2.id.ctv_check,R2.id.tv_check,R2.id.iv_left_image})
 	public void onClick(View v) {
 		int id = v.getId();
 		if (id == R.id.tv_right_text || id == R.id.iv_preview_select_back || id == R.id.tv_preview_select_finish) {

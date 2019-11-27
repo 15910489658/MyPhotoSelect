@@ -1,6 +1,9 @@
 package com.photo.selectlib.utils;
 import com.unity3d.player.UnityPlayer;
 
+/**
+ * Unity调用Android方法之后的所有回调方法
+ */
 public class UnitySendMessageUtil {
 
     private static UnitySendMessageUtil mUnitySendMessageUtil;
@@ -43,5 +46,12 @@ public class UnitySendMessageUtil {
         UnityPlayer.UnitySendMessage(s, "ResponsePhotoSelectCutPath", content);
     }
 
+    /**
+     * 动态申请麦克风权限回调
+     * @param code
+     */
+    public void senMicrophonePermissionResponse(String code){
+        UnityPlayer.UnitySendMessage(s,"ResponseMicrophoneCode",code);
+    }
 
 }

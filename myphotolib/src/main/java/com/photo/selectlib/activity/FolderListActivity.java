@@ -6,9 +6,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -16,7 +14,7 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.view.View;
-import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,12 +22,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jaeger.library.StatusBarUtil;
 import com.photo.selectlib.R;
+import com.photo.selectlib.R2;
 import com.photo.selectlib.adapter.ImageFolderAdapter;
 import com.photo.selectlib.bean.ImageFolderBean;
 import com.photo.selectlib.core.ImageSelectObservable;
 import com.photo.selectlib.listener.OnRecyclerViewClickListener;
 import com.photo.selectlib.utils.AndroidWorkaround;
-import com.photo.selectlib.utils.ImageUtils;
+import com.photo.selectlib.utils.ImageUtil;
 import com.photo.selectlib.utils.TitleView;
 import com.photo.selectlib.utils.ToastUtils;
 
@@ -38,15 +37,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * 本地图片浏览 list列表
  */
-public class FolderListActivity extends Activity implements Callback, OnRecyclerViewClickListener, View.OnClickListener {
+public class FolderListActivity extends BaseExtendActivity implements Callback, OnRecyclerViewClickListener, View.OnClickListener {
 
     private static boolean isRound = false;
     private final int MREQUEST_CODE = 1000;
     // 图片临时保存路径
     private static String mTemporaryPath;
+    @BindView(R2.id.tv_photo_title)
+    TitleView titleView;
+    @BindView(R2.id.lv_photo_folder)
+    RecyclerView mRecyclerView;
+
 
     public static void startFolderListActivity(Activity context, int REQUEST_CODE, ArrayList<ImageFolderBean> photos, int sMaxPicNum) {
         isRound = false;
@@ -56,9 +63,9 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
         context.startActivityForResult(addPhoto, REQUEST_CODE);
     }
 
-    public static void startSelectSingleImgActivity(Activity context, int REQUEST_CODE,boolean isTailor) {
+    public static void startSelectSingleImgActivity(Activity context, int REQUEST_CODE, boolean isTailor) {
         isRound = isTailor;
-        if(isTailor){
+        if (isTailor) {
             mTemporaryPath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath()
                     + File.separator + System.currentTimeMillis() + "photo.jpg";
         }
@@ -90,28 +97,32 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
 
     private final int REQUEST_ADD_OK_CODE = 22;
 
-    private RecyclerView mRecyclerView;
-
     /**
      * 是否选择单张图片
      */
     private boolean mIsSelectSingleImge = false;
 
+    @Override
+    protected void initWindows() {
+
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.photo_folder_main);
-        /*全屏*/
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//        }
+    protected int getContentLayoutId() {
+        return R.layout.photo_folder_main;
+    }
+
+    @Override
+    protected void initTool() {
         StatusBarUtil.setColor(FolderListActivity.this, getResources().getColor(R.color.album_finish));
         //适配虚拟返回键盘
         if (AndroidWorkaround.checkDeviceHasNavigationBar(this)) {
             AndroidWorkaround.assistActivity(findViewById(android.R.id.content));
         }
+    }
+
+    @Override
+    protected void initData() {
         mHandler = new Handler(this);
         mImageFolderList = new ArrayList<>();
         sMaxPicNum = getIntent().getIntExtra("max_num", DEFAULT_MAX_PIC_NUM);
@@ -119,7 +130,7 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
         mIsSelectSingleImge = getIntent().getBooleanExtra("single", false);
         initView();
 
-        ImageUtils.loadLocalFolderContainsImage(this, mHandler, MSG_PHOTO);
+        ImageUtil.loadLocalFolderContainsImage(this, mHandler, MSG_PHOTO);
         ImageSelectObservable.getInstance().addSelectImagesAndClearBefore((ArrayList<ImageFolderBean>) getIntent().getSerializableExtra("list"));
 
         mFloderAdapter = new ImageFolderAdapter(this, mImageFolderList);
@@ -127,46 +138,48 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
         mFloderAdapter.setOnClickListener(this);
     }
 
-    private void initView() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.lv_photo_folder);
+    @Override
+    protected boolean initButterKnife() {
+        return true;
+    }
 
+    private void initView() {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        TitleView titleView = (TitleView) findViewById(R.id.tv_photo_title);
         titleView.getLeftBackImageTv().setOnClickListener(this);
     }
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            switch (requestCode){
+            switch (requestCode) {
                 case REQUEST_ADD_OK_CODE:
-                        if(isRound){
-                            List<ImageFolderBean> selectImages = ImageSelectObservable.getInstance().getSelectImages();
-                            if (selectImages != null && selectImages.size() > 0) {
+                    if (isRound) {
+                        List<ImageFolderBean> selectImages = ImageSelectObservable.getInstance().getSelectImages();
+                        if (selectImages != null && selectImages.size() > 0) {
 //                                cropPhoto(getMediaUriFromPath(this,selectImages.get(selectImages.size()-1).path));
-                                gotoClipActivity(getMediaUriFromPath(this,selectImages.get(selectImages.size()-1).path));
-                            } else {
-                                ToastUtils.getInstance().showShort(this,getString(R.string.select_photo_error),false);
-                            }
-                        }else{
-                            Intent intent = getIntent();
-                            ArrayList<ImageFolderBean> list = new ArrayList<>();
-                            list.addAll(ImageSelectObservable.getInstance().getSelectImages());
-                            intent.putExtra("list", list);
-                            setResult(RESULT_OK, intent);
-                            this.finish();
+                            gotoClipActivity(getMediaUriFromPath(this, selectImages.get(selectImages.size() - 1).path));
+                        } else {
+                            ToastUtils.getInstance().showShort(this, getString(R.string.select_photo_error), false);
                         }
+                    } else {
+                        Intent intent = getIntent();
+                        ArrayList<ImageFolderBean> list = new ArrayList<>();
+                        list.addAll(ImageSelectObservable.getInstance().getSelectImages());
+                        intent.putExtra("list", list);
+                        setResult(RESULT_OK, intent);
+                        this.finish();
+                    }
                     break;
 
                 case MREQUEST_CODE:
-                    if(data != null){
+                    if (data != null) {
                         Uri uri = data.getData();
-                        String cropImagePath = getRealFilePathFromUri(this,uri);
+                        String cropImagePath = getRealFilePathFromUri(this, uri);
                         File cropFile = new File(cropImagePath);
                         if (cropFile.exists()) {
                             Intent intent = getIntent();
@@ -179,12 +192,12 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
                         }
                     }
                     break;
-                    default:
-                        break;
+                default:
+                    break;
             }
-        }else{
+        } else {
             //单选模式设定list只存一张图片
-            if (isRound){
+            if (isRound) {
                 ImageSelectObservable.getInstance().clearSelectImgs();
             }
         }
@@ -262,11 +275,11 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
         Cursor cursor = context.getContentResolver().query(mediaUri,
                 null,
                 MediaStore.Images.Media.DISPLAY_NAME + "= ?",
-                new String[] {path.substring(path.lastIndexOf("/") + 1)},
+                new String[]{path.substring(path.lastIndexOf("/") + 1)},
                 null);
 
         Uri uri = null;
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             uri = ContentUris.withAppendedId(mediaUri,
                     cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
         }
@@ -275,16 +288,24 @@ public class FolderListActivity extends Activity implements Callback, OnRecycler
     }
 
     /**
-     250      * 打开截图的界面
-     251      * @param uri
-     252      */
-     private void gotoClipActivity(Uri uri){
-                 if(uri == null){
-                         return;
-                     }
-                 Intent intent = new Intent(FolderListActivity.this,ClipImageActivity.class);
-                 intent.putExtra("type",1);
-                 intent.setData(uri);
-                 startActivityForResult(intent,MREQUEST_CODE);
-             }
+     * 250      * 打开截图的界面
+     * 251      * @param uri
+     * 252
+     */
+    private void gotoClipActivity(Uri uri) {
+        if (uri == null) {
+            return;
+        }
+        Intent intent = new Intent(FolderListActivity.this, ClipImageActivity.class);
+        intent.putExtra("type", 1);
+        intent.setData(uri);
+        startActivityForResult(intent, MREQUEST_CODE);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
 }
