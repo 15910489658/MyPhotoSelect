@@ -24,7 +24,7 @@ Step 2. Add the dependencies
 Step 3. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.JulyJiangL:MyPhotoSelect:1.3.1'
+	        implementation 'com.github.JulyJiangL:MyPhotoSelect:1.3.2'
 		implementation 'androidx.appcompat:appcompat:1.1.0'
 	}
 	
